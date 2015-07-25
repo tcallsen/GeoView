@@ -21,16 +21,6 @@ var app = {
 		    description : 'some description'
 		}); */
 
-		var key = 'STORE_KEY';
-	      var value = 'some shit from offline';
-	      var r = document.getElementById('results')
-	      localForage.setItem(key, value, function() {
-	        console.log('Saved: ' + value);
-	        localForage.getItem(key, function(err, readValue) {
-	            alert('Read: : ' + readValue);
-	        });
-	      });
-
         var mountNode = document.getElementById('reactAppContainer');
 
         React.renderComponent(GeoView(), mountNode);

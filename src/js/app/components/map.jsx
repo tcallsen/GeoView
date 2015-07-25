@@ -1,5 +1,7 @@
 var React = require("react");
 var ol = require('openlayers');
+var blobUtil = require('blob-util');
+var localForage = require('localforage');
 
 var Map = React.createClass({
       
@@ -8,14 +10,21 @@ var Map = React.createClass({
 		return {
 			map: null,
 			vectorLayer: null,
-			watchID: null
+			watchID: null,
+      readFromCache: false
 		};
 
 	},
 
 	componentDidMount: function() {
       	
-		var vectorLayer = new ol.layer.Vector({
+        this.initializeMap();
+
+  	},
+
+    initializeMap: function() {
+
+      var vectorLayer = new ol.layer.Vector({
           source: new ol.source.Vector({
               features: []
             }),
@@ -86,7 +95,77 @@ var Map = React.createClass({
           })]
         };
  
-        var map = new ol.Map({
+        var terrainLayer = new ol.layer.Tile({
+            source: new ol.source.Stamen({
+                layer: 'terrain',
+
+                tileUrlFunction: function(tileCoord) {
+                    console.log('tileUrlFunction');
+                    console.log(tileCoord);
+                },
+
+                tileLoadFunction: function(imageTile, src) {
+                    
+                    var key = imageTile.getTileCoord().join('_');
+
+                    var imgElement = imageTile.getImage();
+
+                    //console.log('tileLoadFunction - ', key);
+
+
+                    //DETERMINE CACHE MODE                    
+
+
+                    //ONLY CACHE
+                    if (this.state.readFromCache) {
+
+                        console.log('only read from cache');
+
+                        localForage.getItem(key, function(result) {
+                            
+                            //CHECK CACHE
+                            if (result) {
+                                
+                                console.log('cache @ ' + key);
+
+                                localForage.getItem(key, function(result) {
+                                    console.log('reading cached item @ ' + key);
+                                    imgElement.src = blobUtil.createObjectURL(blob);
+                                });
+
+                            }
+
+                        });
+                    }
+
+                    //INET
+                    else {
+
+                        console.log('read from inet');
+
+                        //imgElement.src = src;
+
+                        blobUtil.imgSrcToBlob(src, 'image/png', 'Anonymous').then(function (blob) {
+                            localForage.setItem(key, blob, function() {
+                                console.log('cached item @ ' + key);
+                                localForage.getItem(key, function(result) {
+                                    console.log('reading cached item @ ' + key);
+                                    imgElement.src = blobUtil.createObjectURL(blob);
+                                });
+
+                            });
+                        // success
+                        }).catch(function (err) {
+                            console.log('failed to convert blob @ ' + key);
+                        });
+
+                    }
+
+                }.bind(this)
+            }),
+        });
+
+      var map = new ol.Map({
           layers: [
               
               /*
@@ -112,16 +191,23 @@ var Map = React.createClass({
           }),
           */
 
+          /*
           new ol.layer.Tile({
-            source: new ol.source.Stamen({
-              layer: 'terrain'
+            source: new ol.source.OSM({
+              url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
             })
-          }),
+          })
+          */
+
+          terrainLayer
+          
+          /*
           new ol.layer.Tile({
             source: new ol.source.Stamen({
               layer: 'terrain-labels'
             })
           })
+          */
 
           , vectorLayer 
           ],
@@ -135,13 +221,28 @@ var Map = React.createClass({
           })
         });
 
-	    this.setState({
-	    	map: map,
-	    	vectorLayer: vectorLayer,
-	    	watchID: watchID
-	    });
+      map.on('singleclick', this.toggleMapCacheMode.bind(this));
 
-  	},
+
+      this.setState({
+        map: map,
+        vectorLayer: vectorLayer,
+        terrainLayer: terrainLayer,
+        watchID: watchID
+      });
+
+    },
+
+    toggleMapCacheMode: function() {
+
+        if (this.state.readFromCache) alert('reading from inet');
+        else alert('reading from cache');
+
+        /* this.setState({
+            readFromCache: !this.state.readFromCache
+        }); */
+
+    },
 
       render: function() {
         
