@@ -1,6 +1,7 @@
 html,
 body,
-div#reactAppContainer {
+div#reactAppContainer,
+div#GeoView {
   height: 100%;
   padding: 0;
   margin: 0;

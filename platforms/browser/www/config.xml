@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="co.stample" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>stample-phonegap</name>
+    <name>GeoView</name>
     <description>
-        A Cordova application with Gulp / React / Browserify
+        View geo data on a movile device
     </description>
-    <author email="lorber.sebastien@gmail.com" href="https://stample.co">
-        Lorber Sébastien
+    <author email="taylor.callsen@gmail.com" href="http://gritto.net">
+        Taylor Callsen
     </author>
     <content src="index.html" />
     <access origin="*" />

@@ -1,49 +1,50 @@
 {
-    "name": "geoview",
-    "version": "0.0.1",
-    "description": "App used to view Geo data and imagery on a mobile device.",
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:stample/gulp-browserify-react-phonegap-starter.git"
-    },
-    "license": "Apache",
-    "dependencies": {
-        "cordova": "~3.4.1-0.1.0",
-        "react": "~0.10.0",
-        "cordova-ios": "^3.5.0",
-        "openlayers": "^3.4.0"
-    },
-    "devDependencies": {
-        "reactify": "~0.13.1",
-        "envify": "~1.2.1",
-        "browserify-shim": "~3.4.1",
-        "browserify": "~3.36.0",
-        "cordova-lib": "^0.21.6",
-        "gulp-changed": "~0.3.0",
-        "gulp-imagemin": "~0.1.5",
-        "gulp-notify": "~1.2.4",
-        "gulp": "~3.6.0",
-        "gulp-util": "~2.2.14",
-        "gulp-less": "~1.2.3",
-        "gulp-recess": "~0.3.1",
-        "vinyl-source-stream": "~0.1.1",
-        "wrench": "~1.5.8"
-    },
-    "browserify": {
-        "transform": [
-            [
-                "reactify",
-                {
-                    "es6": true
-                }
-            ],
-            "browserify-shim"
-        ]
-    },
-    "browserify-shim": {
-        "plugin": {
-            "exports": "plugin",
-            "depends": [ ]
+  "name": "geoview",
+  "version": "0.0.1",
+  "description": "App used to view Geo data and imagery on a mobile device.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:stample/gulp-browserify-react-phonegap-starter.git"
+  },
+  "license": "Apache",
+  "dependencies": {
+    "cordova": "~3.4.1-0.1.0",
+    "cordova-ios": "^3.5.0",
+    "localforage": "^1.2.4",
+    "openlayers": "^3.4.0",
+    "react": "~0.10.0"
+  },
+  "devDependencies": {
+    "reactify": "~0.13.1",
+    "envify": "~1.2.1",
+    "browserify-shim": "~3.4.1",
+    "browserify": "~3.36.0",
+    "cordova-lib": "^0.21.6",
+    "gulp-changed": "~0.3.0",
+    "gulp-imagemin": "~0.1.5",
+    "gulp-notify": "~1.2.4",
+    "gulp": "~3.6.0",
+    "gulp-util": "~2.2.14",
+    "gulp-less": "~1.2.3",
+    "gulp-recess": "~0.3.1",
+    "vinyl-source-stream": "~0.1.1",
+    "wrench": "~1.5.8"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "es6": true
         }
+      ],
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "plugin": {
+      "exports": "plugin",
+      "depends": []
     }
+  }
 }
