@@ -6,7 +6,7 @@ var localForage = require('localforage');
 var app = {
 
     initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
 
     onDeviceReady: function() {
@@ -25,9 +25,9 @@ var app = {
 
         React.renderComponent(GeoView(), mountNode);
 
-        console.log("React should now be loaded now");
+        console.log("React should now be loaded now"); 
 
-    }
+    } 
 
 };
 
