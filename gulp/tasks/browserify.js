@@ -12,10 +12,11 @@ gulp.task('browserify', function(){
     return browserify({
         entries: ['./src/js/app.js'],
         extensions: ['.jsx'],
-        paths: ['./node_modules','./src/js/']
+        paths: ['./node_modules','./src/js/'],
+        debug: true
     })
         .transform('reactify')
-        .bundle({debug: true})
+        .bundle()
         .on('error', handleErrors)
         .pipe(source('app.js'))
         .pipe(gulp.dest('./www'));

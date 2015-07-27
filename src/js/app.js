@@ -23,7 +23,7 @@ var app = {
 
         var mountNode = document.getElementById('reactAppContainer');
 
-        React.renderComponent(GeoView(), mountNode);
+        React.render(<GeoView />, mountNode);// React.createElement(GeoView, null);
 
         console.log("React should now be loaded now"); 
 
@@ -32,4 +32,3 @@ var app = {
 };
 
 app.initialize();
-

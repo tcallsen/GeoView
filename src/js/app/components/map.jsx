@@ -11,7 +11,7 @@ var Map = React.createClass({
 			map: null,
 			vectorLayer: null,
 			watchID: null,
-      readFromCache: false
+      readFromCache: false 
 		};
 
 	},
@@ -19,6 +19,8 @@ var Map = React.createClass({
 	componentDidMount: function() {
       	
         this.initializeMap();
+
+        if (this.state.readFromCache) alert('reading from cache only!');
 
   	},
 
@@ -278,11 +280,12 @@ var Map = React.createClass({
         this.props.fileSystem.root.getFile("readme.txt", {create: true, exclusive: false}, function(fileEntry) {
                 
             fileEntry.createWriter(function(writer) {
-                      
+                 
+                /* 
                 localForage.keys(function(err, keys) {
                     this.writeBlobToFile(keys, 0, writer, {});
                 }.bind(this));
-
+                */
                 /*
                 localForage.iterate(function(value, key, iterationNumber) {
                     // Resulting key/value pair -- this callback
@@ -362,8 +365,8 @@ var Map = React.createClass({
     render: function() {
       
     	var style = {
-    		height: '100%',
-    		width: '100%'
+      		height: 'calc(100% - 64px)',
+      		width: '100%'
     	};
 
       return (
