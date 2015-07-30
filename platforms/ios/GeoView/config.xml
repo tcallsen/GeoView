@@ -21,6 +21,9 @@
         <param name="ios-package" value="CDVFile" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="FileTransfer">
+        <param name="ios-package" value="CDVFileTransfer" />
+    </feature>
     <name>GeoView</name>
     <description>
         View geo data on a movile device

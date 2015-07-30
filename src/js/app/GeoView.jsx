@@ -2,44 +2,20 @@
 
 var React = require("react");
 var Map     = require("./components/Map");
+var LeftNav   = require("./components/leftNav");
 var localForage = require('localforage');
 
 var mui = require('material-ui'); 
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
-
 var ThemeManager = new mui.Styles.ThemeManager();
-
 var AppBar = mui.AppBar;
-var LeftNav = mui.LeftNav;
-var MenuItem = mui.MenuItem;
 
 var GeoView = React.createClass({
     
 	getInitialState: function() {
 		return {
-			fileSystem: null,
-			menuItems: [
-			  { route: 'get-started', text: 'Get Started' },
-			  { route: 'customization', text: 'Customization' },
-			  { route: 'components', text: 'Components' },
-			  { type: MenuItem.Types.SUBHEADER, text: 'Resources' },
-			  { 
-			     type: MenuItem.Types.LINK, 
-			     payload: 'https://github.com/callemall/material-ui', 
-			     text: 'GitHub' 
-			  },
-			  { 
-			     text: 'Disabled', 
-			     disabled: true 
-			  },
-			  { 
-			     type: MenuItem.Types.LINK, 
-			     payload: 'https://www.google.com', 
-			     text: 'Disabled Link', 
-			     disabled: true 
-			  },
-			]
+			fileSystem: null
 		};
 	},
 
@@ -69,9 +45,14 @@ var GeoView = React.createClass({
 	},
 
 	storeFileSystemRef: function(fileSystem) {
+		
+		//generate Excusion list based on available files
+
+
 		this.setState({
 			fileSystem: fileSystem
 		});
+
 	},
 
 	errorAccessingFileSystem: function(evt) {
@@ -80,24 +61,29 @@ var GeoView = React.createClass({
 	},
 
 	toggleLeftNav: function(event, value) {
-		this.refs.leftNav.toggle();
+		this.refs.leftNav.toggleLeftNav();
+	},
+
+	hangleLeftNavEvent: function(e, selectedIndex, menuItem) {
+		menuItem.action();
+	},
+
+	toggleNewDialog: function() {
+		this.refs.newDialog.refs.dialog.show();
 	},
 
     render: function() {
-        
-        //enable react 0.13 ...
-        var fileSystem = this.state.fileSystem;
-    	var map = React.createElement(Map, { fileSystem : fileSystem });
 
         return (
             <div id="GeoView"> 
-              	<LeftNav ref="leftNav" docked={false} menuItems={this.state.menuItems} />
+              	<LeftNav
+              		ref="leftNav"
+              		fileSystem= {this.state.fileSystem} />
               	<AppBar
-				  title="GeoView"
-				  iconClassNameRight="muidocs-icon-navigation-expand-more"
-				  onLeftIconButtonTouchTap={this.toggleLeftNav} /> 
-			  	<Map
-			  		fileSystem= {this.props.fileSystem} /> 
+				  	title="GeoView"
+				  	iconClassNameRight="muidocs-icon-navigation-expand-more"
+				  	onLeftIconButtonTouchTap={this.toggleLeftNav} /> 
+			  	<Map fileSystem= {this.state.fileSystem} /> 
             </div>
         );
     }

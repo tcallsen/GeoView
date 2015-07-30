@@ -150,13 +150,35 @@ module.exports = [
         "merges": [
             "window.FileSystem"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-file-transfer/www/browser/FileTransfer.js",
+        "id": "cordova-plugin-file-transfer.BrowserFileTransfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
     "cordova-plugin-geolocation": "1.0.1",
-    "cordova-plugin-file": "2.1.1-dev"
+    "cordova-plugin-file": "2.1.1-dev",
+    "cordova-plugin-file-transfer": "1.2.1"
 }
 // BOTTOM OF METADATA
 });

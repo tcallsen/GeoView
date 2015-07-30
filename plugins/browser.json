@@ -12,6 +12,9 @@
         },
         "cordova-plugin-file": {
             "PACKAGE_NAME": "co.stample"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "co.stample"
         }
     },
     "dependent_plugins": {}

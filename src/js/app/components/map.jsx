@@ -216,7 +216,7 @@ var Map = React.createClass({
           ],
           target: 'map',
           view: new ol.View({
-            center: ol.proj.transform( [-89.4000,43.0667], 'EPSG:4326', 'EPSG:3857'),
+            center: ol.proj.transform( [-111.4997,40.6594], 'EPSG:4326', 'EPSG:3857'),
             zoom: 13,
             maxZoom: 18,
             minZoom: 4,

@@ -44,6 +44,7 @@
 		832F179E0229495FAAAE287C /* CDVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 0659CF77567849A4A066DA1F /* CDVFile.m */; };
 		41187C90458B4A12BC985D8A /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 98811AA3C67A446EAE5BD035 /* CDVLocalFilesystem.m */; };
 		370F2464F098429D9874A12A /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 549700005E7D476483938792 /* CDVAssetLibraryFilesystem.m */; };
+		8206C1B131EF4E3D9BB563F6 /* CDVFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = A8704C4A78EB46BAAECC10E0 /* CDVFileTransfer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,8 @@
 		3E8FD9A472EE4E36976AC55A /* CDVFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVFile.h"; path = "cordova-plugin-file/CDVFile.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		A7696513E30144E9A931F59F /* CDVLocalFilesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVLocalFilesystem.h"; path = "cordova-plugin-file/CDVLocalFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		61E77DDCEC444C4383B1F7FC /* CDVAssetLibraryFilesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVAssetLibraryFilesystem.h"; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		A8704C4A78EB46BAAECC10E0 /* CDVFileTransfer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVFileTransfer.m"; path = "cordova-plugin-file-transfer/CDVFileTransfer.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		CC4A4B46A7C046F8A2B2E090 /* CDVFileTransfer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVFileTransfer.h"; path = "cordova-plugin-file-transfer/CDVFileTransfer.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +229,8 @@
 				3E8FD9A472EE4E36976AC55A /* CDVFile.h */,
 				A7696513E30144E9A931F59F /* CDVLocalFilesystem.h */,
 				61E77DDCEC444C4383B1F7FC /* CDVAssetLibraryFilesystem.h */,
+				A8704C4A78EB46BAAECC10E0 /* CDVFileTransfer.m */,
+				CC4A4B46A7C046F8A2B2E090 /* CDVFileTransfer.h */,
 			);
 			name = Plugins;
 			path = "GeoView/Plugins";
@@ -414,6 +419,7 @@
 				832F179E0229495FAAAE287C /* CDVFile.m in Sources */,
 				41187C90458B4A12BC985D8A /* CDVLocalFilesystem.m in Sources */,
 				370F2464F098429D9874A12A /* CDVAssetLibraryFilesystem.m in Sources */,
+				8206C1B131EF4E3D9BB563F6 /* CDVFileTransfer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
