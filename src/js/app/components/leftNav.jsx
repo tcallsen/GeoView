@@ -64,7 +64,7 @@ var LeftNav = React.createClass({
 				excursionsMenuItems.push({
 					key: 'excursion_' + index,
 					text: entry.name,
-					action: this.loadExcursion.bind(this, entry),
+					action: this.deleteExcursion.bind(this, entry),
 					/* style: {
 						overflow: 'hidden'
 					} */
@@ -88,11 +88,26 @@ var LeftNav = React.createClass({
 		alert(menuEntry.name);
 	},
 
+	deleteExcursion: function(menuEntry) {
+
+		var fileSystem = fileSystem || this.props.fileSystem;
+
+		fileSystem.root.getFile(menuEntry.fullPath, null, function(fileEntry) {
+
+			fileEntry.remove(function(){
+				alert(fileEntry.name + ' deleted.');
+				this.forceLeftNavUpdate();
+			}.bind(this), this.errorAccessingFileSystem);
+
+		}.bind(this), this.errorAccessingFileSystem)
+
+	},
+
 	toggleLeftNav: function(event, value) {
 		this.refs.muiLeftNav.toggle();
 	},
 
-	hangleLeftNavEvent: function(e, selectedIndex, menuItem) {
+	handleLeftNavEvent: function(e, selectedIndex, menuItem) {
 		menuItem.action();
 	},
 
@@ -120,7 +135,7 @@ var LeftNav = React.createClass({
 	            	ref="muiLeftNav" 
 	          		docked={false} 
 	          		menuItems={concatenatedMenuItems} 
-	          		onChange={this.hangleLeftNavEvent} />
+	          		onChange={this.handleLeftNavEvent} />
 	      		<NewDialog 
 					ref="newDialog" 
 					fileSystem= {this.props.fileSystem}
