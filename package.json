@@ -12,6 +12,7 @@
     "cordova": "~3.4.1-0.1.0",
     "cordova-ios": "^3.5.0",
     "localforage": "^1.2.4",
+    "material-design-icons": "^2.0.0",
     "material-ui": "^0.10.1",
     "openlayers": "^3.4.0",
     "react": "^0.13.0",

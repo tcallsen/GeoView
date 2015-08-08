@@ -12,6 +12,6 @@ gulp.task('watch', function() {
     var onJsChange = function(file) {
         gutil.log("WWW change detected:",file.path);
     };
-    gulp.watch(['./www/**']).on('change', onJsChange);
+    //gulp.watch(['./www/**']).on('change', onJsChange);
 
 });

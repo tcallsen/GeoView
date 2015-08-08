@@ -65,9 +65,9 @@ var LeftNav = React.createClass({
 					key: 'excursion_' + index,
 					text: entry.name,
 					action: this.loadExcursion.bind(this, entry),
-					style: {
+					/* style: {
 						overflow: 'hidden'
-					}
+					} */
 				});
 
 			});

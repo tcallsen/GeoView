@@ -36,7 +36,7 @@ var buildDir = path.join(__dirname, 'build');
 
 //gulp.task('cordova' ['browserify','emulate']);
 
-gulp.task('cordova', ['browserify','images','styles','html'], function() {
+gulp.task('cordova', ['browserify','images','styles','html','fonts'], function() {
     //process.chdir(buildDir);
     return cdv.emulate({platforms:[platform]});
 });
