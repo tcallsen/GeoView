@@ -106,6 +106,7 @@ var Map = React.createClass({
                     console.log(tileCoord);
                 }, */
 
+                /* DISABLING ALL CACHING FOR NOW
                 tileLoadFunction: function(imageTile, src) {
                     
                     //console.log('tileLoadFunction');
@@ -161,7 +162,7 @@ var Map = React.createClass({
 
                     }
 
-                }.bind(this)
+                }.bind(this) */
             });
 
         var terrainLayer = new ol.layer.Tile({
@@ -224,7 +225,7 @@ var Map = React.createClass({
           })
         });
 
-      map.on('singleclick', this.toggleMapCacheMode.bind(this));
+      map.on('singleclick', this.toggleMapCacheMode);
 
       this.setState({
         map: map,

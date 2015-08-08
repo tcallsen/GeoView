@@ -2,7 +2,8 @@ var React = require("react");
 
 var mui = require('material-ui'); 
 var Dialog = mui.Dialog;
-var FlatButton = mui.FlatButton; 
+var FlatButton = mui.FlatButton;
+var TextField = mui.TextField; 
 
 var NewDialog = React.createClass({
       
@@ -14,7 +15,7 @@ var NewDialog = React.createClass({
 
   	},
 
-	  componentDidMount: function() {
+    componentDidMount: function() {
         console.log('NewDialog mount');
   	},
 
@@ -50,14 +51,18 @@ var NewDialog = React.createClass({
     writeToFile: function() {
         
         console.log('writeToFile');
-        var fileName = (new Date()).toString().replace(/ /g,'') + '.txt';
+        var fileName = (new Date()).toString().replace(/ /g,'').replace(new RegExp(":", "g"),'') + '.txt';
 
-        this.props.fileSystem.root.getFile(fileName, {create: true, exclusive: false}, function gotFileEntry(fileEntry) {
+        //alert(fileName);
+        //alert(cordova.file.applicationDirectory);
+
+        this.props.fileSystem.root.getFile(this.props.fileSystem.root.fullPath + fileName, {create: true, exclusive: false}, function gotFileEntry(fileEntry) {
             fileEntry.createWriter(function(writer) {
                 writer.write('taylor was here');
                 writer.onwriteend = function(evt) {
-                    console.log('wrote to file ' + fileName + ' length ' + writer.position);
-                };
+                    alert('wrote to file ' + fileName + ' length ' + writer.position);
+                    this.props.forceLeftNavUpdate();
+                }.bind(this);
             }.bind(this), this.fileSystemFail);
         }.bind(this), this.fileSystemFail);
         this.dismissDialog();
@@ -65,8 +70,8 @@ var NewDialog = React.createClass({
     },
 
     fileSystemFail: function(evt) { 
-        console.log('filesystem error:');
-        console.log(evt);
+        alert('filesystem error:');
+        alert(evt);
     },
 
     render: function() {
@@ -74,19 +79,38 @@ var NewDialog = React.createClass({
         //Custom Actions
         var customActions = [
           <FlatButton
+            key="cancel"
             label="Cancel"
             secondary={true}
             onTouchTap={this.dismissDialog} />,
           <FlatButton
-            label="Save"
+            key="create"
+            label="Create"
             primary={true}
-            onTouchTap={this.writeToFile} />
+            onTouchTap={this.writeToFile} /> 
         ];
+
+        //styles
+        var style = {
+            containerDiv: {
+                textAlign: 'center',
+                maxWidth: 400
+            }
+        }
  
         return (
-            <Dialog ref="dialog" title="Dialog With Scrollable Content" actions={customActions}
-              autoDetectWindowHeight={true} autoScrollBodyContent={true}>
-                <div style={{height: '2000px'}}>Really long content</div>
+            <Dialog ref="dialog" title="Dialog With Scrollable Content" actions={customActions} autoDetectWindowHeight={true} autoScrollBodyContent={true}>
+                <div style={style.containerDiv}>
+
+                    <TextField
+                        hintText="Excursion Name"
+                        floatingLabelText="Excursion Name" />
+
+                    <TextField
+                        hintText="GPX File URL"
+                        floatingLabelText="GPX File URL" />
+
+                </div>
             </Dialog>
         );
 
