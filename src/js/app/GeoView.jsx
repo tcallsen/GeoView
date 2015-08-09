@@ -1,9 +1,13 @@
 /** @jsx React.DOM */
 
 var React = require("react");
+var localForage = require('localforage');
+
 var Map     = require("./components/Map");
 var LeftNav   = require("./components/leftNav");
-var localForage = require('localforage');
+
+var ServiceStore = require('./stores/ServiceStore');
+var Actions = require('./actions');
 
 var mui = require('material-ui'); 
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -15,13 +19,18 @@ var GeoView = React.createClass({
     
 	getInitialState: function() {
 		return {
-			fileSystem: null
+			
 		};
 	},
 
 	componentDidMount: function() {
 		
-		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.storeFileSystemRef, this.errorAccessingFileSystem);
+		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
+			Actions.registerService({
+				name: 'fileSystem',
+				service: fileSystem
+			});
+		}, this.errorAccessingFileSystem);
 
 		/* 
 		localForage.clear(function(err) {
@@ -44,18 +53,6 @@ var GeoView = React.createClass({
 		};
 	},
 
-	storeFileSystemRef: function(fileSystem) {
-		
-		//generate Excusion list based on available files
-
-
-		this.setState({
-			fileSystem: fileSystem
-		});
-
-
-	},
-
 	errorAccessingFileSystem: function(evt) {
 		console.log(evt);
 		//alert(evt.target.error.code);
@@ -65,26 +62,17 @@ var GeoView = React.createClass({
 		this.refs.leftNav.toggleLeftNav();
 	},
 
-	hangleLeftNavEvent: function(e, selectedIndex, menuItem) {
-		menuItem.action();
-	},
-
-	toggleNewDialog: function() {
-		this.refs.newDialog.refs.dialog.show();
-	},
-
     render: function() {
 
         return (
             <div id="GeoView"> 
               	<LeftNav
-              		ref="leftNav"
-              		fileSystem= {this.state.fileSystem} />
+              		ref="leftNav" />
               	<AppBar
 				  	title="GeoView"
 				  	iconClassNameRight="muidocs-icon-navigation-expand-more"
 				  	onLeftIconButtonTouchTap={this.toggleLeftNav} /> 
-			  	<Map fileSystem= {this.state.fileSystem} /> 
+			  	<Map /> 
             </div>
         );
     }

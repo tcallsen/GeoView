@@ -1,5 +1,8 @@
 var React = require("react");
 
+var ServiceStore = require('../stores/ServiceStore');
+var Actions     = require('../actions');
+
 var mui = require('material-ui'); 
 var Dialog = mui.Dialog;
 var FlatButton = mui.FlatButton;
@@ -56,16 +59,21 @@ var NewDialog = React.createClass({
         //alert(fileName);
         //alert(cordova.file.applicationDirectory);
 
-        this.props.fileSystem.root.getFile(this.props.fileSystem.root.fullPath + fileName, {create: true, exclusive: false}, function gotFileEntry(fileEntry) {
-            fileEntry.createWriter(function(writer) {
-                writer.write('taylor was here');
-                writer.onwriteend = function(evt) {
-                    alert('wrote to file ' + fileName + ' length ' + writer.position);
-                    this.props.forceLeftNavUpdate();
-                }.bind(this);
-            }.bind(this), this.fileSystemFail);
-        }.bind(this), this.fileSystemFail);
-        this.dismissDialog();
+        var fileSystem = ServiceStore.getService('fileSystem');
+        if (fileSystem) {
+            fileSystem.root.getFile(fileSystem.root.fullPath + fileName, {create: true, exclusive: false}, function gotFileEntry(fileEntry) {
+                fileEntry.createWriter(function(writer) {
+                    writer.write('taylor was here');
+                    writer.onwriteend = function(evt) {
+                        Actions.triggerServiceEvent({
+                            name: 'fileSystem',
+                            event: 'update'
+                        });
+                    };
+                }, this.fileSystemFail);
+            }, this.fileSystemFail);
+            this.dismissDialog();
+        } else alert('File System not loaded.');
 
     },
 

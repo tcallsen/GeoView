@@ -16,7 +16,8 @@
     "material-ui": "^0.10.1",
     "openlayers": "^3.4.0",
     "react": "^0.13.0",
-    "react-tap-event-plugin": "^0.1.7"
+    "react-tap-event-plugin": "^0.1.7",
+    "reflux": "^0.2.11"
   },
   "devDependencies": {
     "reactify": "~1.1.1",

@@ -1,6 +1,9 @@
 /** @jsx React.DOM */
 
 var React = require("react");
+var Reflux      = require('reflux');
+var ServiceStore = require('../stores/ServiceStore');
+var Actions = require('../actions');
 
 var NewDialog   = require("./newDialog");
 
@@ -10,6 +13,10 @@ var MuiLeftNav = mui.LeftNav;
 var MenuItem = mui.MenuItem;
 
 var LeftNav = React.createClass({
+
+	mixins: [Reflux.listenToMany({
+        handleServiceEvent: ServiceStore
+    })],
     
 	getInitialState: function() {
 		return {
@@ -41,16 +48,20 @@ var LeftNav = React.createClass({
 	componentWillReceiveProps: function(nextProps) {
 		
 		//when filesystem reference is passed in from parent props -> load available excursions
-		if (nextProps && nextProps.fileSystem && nextProps.fileSystem.root) this.loadAvailableExcursions(nextProps.fileSystem);
+		//if (nextProps && nextProps.fileSystem && nextProps.fileSystem.root) this.loadAvailableExcursions(nextProps.fileSystem);
+
+	},
+
+	handleServiceEvent: function(serviceEvent) {
+		console.log('handleServiceEvent', serviceEvent);
+
+		if (serviceEvent.name === 'fileSystem') this.loadAvailableExcursions(serviceEvent.service);
 
 	},
 
 	loadAvailableExcursions: function(fileSystem) {
 
 		console.log('loadAvailableExcursions');
-
-		//retrieve fileSystem from function parameter (when called from componentWillRecieveProps on app boot) or from props
-		var fileSystem = fileSystem || this.props.fileSystem;
 
 		var directoryReader = fileSystem.root.createReader();
 
@@ -90,16 +101,21 @@ var LeftNav = React.createClass({
 
 	deleteExcursion: function(menuEntry) {
 
-		var fileSystem = fileSystem || this.props.fileSystem;
+		var fileSystem = ServiceStore.getService('fileSystem');
+        if (fileSystem) {
 
-		fileSystem.root.getFile(menuEntry.fullPath, null, function(fileEntry) {
+			fileSystem.root.getFile(menuEntry.fullPath, null, function(fileEntry) {
 
-			fileEntry.remove(function(){
-				alert(fileEntry.name + ' deleted.');
-				this.forceLeftNavUpdate();
-			}.bind(this), this.errorAccessingFileSystem);
+				fileEntry.remove(function(){
+					Actions.triggerServiceEvent({
+                        name: 'fileSystem',
+                        event: 'update'
+                    });
+				}, this.errorAccessingFileSystem);
 
-		}.bind(this), this.errorAccessingFileSystem)
+			}, this.errorAccessingFileSystem)
+
+		} else alert('File System not loaded.');
 
 	},
 
@@ -137,9 +153,7 @@ var LeftNav = React.createClass({
 	          		menuItems={concatenatedMenuItems} 
 	          		onChange={this.handleLeftNavEvent} />
 	      		<NewDialog 
-					ref="newDialog" 
-					fileSystem= {this.props.fileSystem}
-					forceLeftNavUpdate= {this.forceLeftNavUpdate} />
+					ref="newDialog" />
 			</div>
         );
     }
