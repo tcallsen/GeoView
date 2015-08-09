@@ -23,7 +23,14 @@ var app = {
 
         var mountNode = document.getElementById('reactAppContainer');
 
-        React.render(<GeoView />, mountNode);// React.createElement(GeoView, null);
+        // INITIALIZE REACT APP - pass in available services into services[] prop
+        React.render(<GeoView 
+            services={[
+                {
+                    name: 'fileTransfer',
+                    service: new FileTransfer()
+                }
+            ]} />, mountNode);
 
         console.log("React should now be loaded now"); 
 

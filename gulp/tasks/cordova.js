@@ -28,8 +28,8 @@ var path = require("path");
 var gulp         = require('gulp');
 
 //Cordova
-//var platform = 'ios';
-var platform = 'browser';
+var platform = 'ios';
+//var platform = 'browser';
 var cordova_lib = require('cordova-lib');
 var cdv = cordova_lib.cordova.raw;
 var buildDir = path.join(__dirname, 'build');

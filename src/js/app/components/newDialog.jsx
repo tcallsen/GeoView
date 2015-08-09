@@ -3,6 +3,8 @@ var React = require("react");
 var ServiceStore = require('../stores/ServiceStore');
 var Actions     = require('../actions');
 
+var utility = require('../utility');
+
 var mui = require('material-ui'); 
 var Dialog = mui.Dialog;
 var FlatButton = mui.FlatButton;
@@ -18,33 +20,49 @@ var NewDialog = React.createClass({
 
   	},
 
-    componentDidMount: function() {
-        console.log('NewDialog mount');
-  	},
-
     downloadGpxFile: function(event) {
         console.log('downloadGpxFile');
 
-        this.props.fileSystem.root.getFile("dummy.html", {create: true, exclusive: false}, 
-        function gotFileEntry(fileEntry) {
-            var sPath = fileEntry.fullPath.replace("dummy.html","");
-            var fileTransfer = new FileTransfer();
-            fileEntry.remove();
+        //get excursionName & gpxUrl - return if they do not exist
+        var excursionName = this.refs.excursionName.getValue();
+        var gpxUrl = this.refs.gpxFileUrl.getValue();
+        if (!excursionName || !gpxUrl) return;
 
-            fileTransfer.download(
-                "http://www.w3.org/2011/web-apps-ws/papers/Nitobi.pdf",
-                sPath + "theFile.pdf",
-                function(theFile) {
-                    alert("download complete: " + theFile.toURI());
-                    showLink(theFile.toURI());
-                },
-                function(error) {
-                    alert("download error source " + error.source);
-                    alert("download error target " + error.target);
-                    alert("upload error code: " + error.code);
-                }
-            );
-        }, this.fileSystemFail);
+        var fileSystem = ServiceStore.getService('fileSystem');
+        var fileTransfer = ServiceStore.getService('fileTransfer');
+        if (fileSystem && fileTransfer) {
+
+            //make sure parent directory has been created and is available
+            fileSystem.root.getDirectory(fileSystem.root.fullPath + 'gpx', {create: true, exclusive: false}, function() {
+
+                //get desintation file handle for write access
+                fileSystem.root.getFile(fileSystem.root.fullPath + "gpx/incoming", {create: true, exclusive: false}, 
+                    function gotFileEntry(fileEntry) {
+
+                        var destinationPath = 'cdvfile://localhost/persistent/gpx/incoming'.replace("incoming","");//fileEntry.fullPath.replace("incoming","");
+                        destinationPath += utility.removeSpaces(excursionName) + '.gpx'; 
+
+                        //download remote file to local file handle
+                        fileTransfer.download(
+                            gpxUrl,
+                            destinationPath,
+                            function(theFile) {
+                                alert("download complete!");
+                            },
+                            function(error) {
+                                alert("download error source " + error.source);
+                                alert("download error target " + error.target);
+                                alert("download error code: " + error.code);
+                            }
+                        ); 
+ 
+                    }.bind(this)
+                , this.fileSystemFail);
+
+            }, this.fileSystemFail);
+
+        }
+
     },
 
     dismissDialog: function() {
@@ -54,10 +72,7 @@ var NewDialog = React.createClass({
     writeToFile: function() {
         
         console.log('writeToFile');
-        var fileName = (new Date()).toString().replace(/ /g,'').replace(new RegExp(":", "g"),'') + '.txt';
-
-        //alert(fileName);
-        //alert(cordova.file.applicationDirectory);
+        var fileName = utility.removeSpaces((new Date()).toString()) + '.txt';
 
         var fileSystem = ServiceStore.getService('fileSystem');
         if (fileSystem) {
@@ -84,6 +99,8 @@ var NewDialog = React.createClass({
 
     render: function() {
 
+        console.log('NewDialog render');
+
         //Custom Actions
         var customActions = [
           <FlatButton
@@ -95,7 +112,7 @@ var NewDialog = React.createClass({
             key="create"
             label="Create"
             primary={true}
-            onTouchTap={this.writeToFile} /> 
+            onTouchTap={this.downloadGpxFile} /> 
         ];
 
         //styles
@@ -111,10 +128,12 @@ var NewDialog = React.createClass({
                 <div style={style.containerDiv}>
 
                     <TextField
+                        ref="excursionName"
                         hintText="Excursion Name"
                         floatingLabelText="Excursion Name" />
 
                     <TextField
+                        ref="gpxFileUrl"
                         hintText="GPX File URL"
                         floatingLabelText="GPX File URL" />
 

@@ -25,6 +25,9 @@ var GeoView = React.createClass({
 
 	componentDidMount: function() {
 		
+		// REGISTER SERVICES with ServiceStore
+
+		// FILESYSTEM
 		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
 			Actions.registerService({
 				name: 'fileSystem',
@@ -32,14 +35,21 @@ var GeoView = React.createClass({
 			});
 		}, this.errorAccessingFileSystem);
 
-		/* 
+
+		// FILE TRANSFER & other services passed in from parent app.js
+		this.props.services.forEach( service => {
+			Actions.registerService({
+				name: service.name,
+				service: service.service
+			});
+		});
+
+		/*
 		localForage.clear(function(err) {
 			console.log('localForage cleared..');
 		}); */
 
-		/* window.addEventListener('filePluginIsReady', function(){ 
-			console.log('filePluginIsReady');		
-		}, false); */
+		
 	},
 
 	childContextTypes: {

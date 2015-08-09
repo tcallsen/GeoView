@@ -53,9 +53,12 @@ var LeftNav = React.createClass({
 	},
 
 	handleServiceEvent: function(serviceEvent) {
-		console.log('handleServiceEvent', serviceEvent);
 
-		if (serviceEvent.name === 'fileSystem') this.loadAvailableExcursions(serviceEvent.service);
+		//detect if filesystem update - if so reload excursions and gpx files
+		if (serviceEvent.name === 'fileSystem') {
+			this.loadAvailableExcursions(serviceEvent.service);
+			//this.loadAvailableGpxFiles(serviceEvent.service);
+		}
 
 	},
 
