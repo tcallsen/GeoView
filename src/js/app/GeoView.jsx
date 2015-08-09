@@ -9,6 +9,8 @@ var LeftNav   = require("./components/leftNav");
 var ServiceStore = require('./stores/ServiceStore');
 var Actions = require('./actions');
 
+var ExcursionService = require('./services/ExcursionService');
+
 var mui = require('material-ui'); 
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
@@ -42,6 +44,12 @@ var GeoView = React.createClass({
 				name: service.name,
 				service: service.service
 			});
+		});
+
+		// EXCURSION
+		Actions.registerService({
+			name: 'excursion',
+			service: ExcursionService
 		});
 
 		/*

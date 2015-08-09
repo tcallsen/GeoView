@@ -20,13 +20,35 @@ var NewDialog = React.createClass({
 
   	},
 
-    downloadGpxFile: function(event) {
-        console.log('downloadGpxFile');
+    dismissDialog: function() {
+        this.refs.dialog.dismiss();
+    },
+
+    createExcursion: function(event) {
+
+        console.log('createExcursion');
 
         //get excursionName & gpxUrl - return if they do not exist
         var excursionName = this.refs.excursionName.getValue();
         var gpxUrl = this.refs.gpxFileUrl.getValue();
         if (!excursionName || !gpxUrl) return;
+
+        //retrieve gpx file
+        var excursionService = ServiceStore.getService('excursion');
+        if (excursionService) {
+
+            console.log('createing Excursion');
+
+            excursionService.create({
+                name: excursionName
+            });
+
+        } else alert('Error retrieving excursionService.');
+
+    },
+
+    downloadGpxFile: function(event) {
+        console.log('downloadGpxFile');
 
         var fileSystem = ServiceStore.getService('fileSystem');
         var fileTransfer = ServiceStore.getService('fileTransfer');
@@ -63,10 +85,6 @@ var NewDialog = React.createClass({
 
         }
 
-    },
-
-    dismissDialog: function() {
-        this.refs.dialog.dismiss();
     },
 
     writeToFile: function() {
@@ -112,7 +130,7 @@ var NewDialog = React.createClass({
             key="create"
             label="Create"
             primary={true}
-            onTouchTap={this.downloadGpxFile} /> 
+            onTouchTap={this.createExcursion} /> 
         ];
 
         //styles
