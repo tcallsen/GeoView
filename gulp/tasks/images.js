@@ -6,7 +6,7 @@ gulp.task('images', function() {
 
     var dest = './www/img';
 
-	return gulp.src('./src/img/**')
+	return gulp.src('./src/assets/img/**')
 		.pipe(changed(dest)) // Ignore unchanged files
 		.pipe(imagemin()) // Optimize
 		.pipe(gulp.dest(dest));

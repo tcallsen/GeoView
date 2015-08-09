@@ -4,7 +4,7 @@ var gutil = require('gulp-util');
 gulp.task('watch', function() {
 
 	gulp.watch('./src/js/**', ['cordova']);
-	gulp.watch('./src/img/**', ['cordova']);
+	//gulp.watch('./src/img/**', ['cordova']);
 	gulp.watch('./src/css/**', ['cordova']);
 	gulp.watch('./src/index.html', ['cordova']);
 

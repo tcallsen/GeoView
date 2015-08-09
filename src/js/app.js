@@ -32,7 +32,7 @@ var app = {
                 }
             ]} />, mountNode);
 
-        console.log("React should now be loaded now"); 
+        console.log("React should now be loaded now");  
 
     } 
 
