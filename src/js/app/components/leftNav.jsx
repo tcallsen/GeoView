@@ -56,7 +56,7 @@ var LeftNav = React.createClass({
 
 		//detect if filesystem update - if so reload excursions and gpx files
 		if (serviceEvent.name === 'fileSystem') {
-			this.loadAvailableExcursions(serviceEvent.service);
+			//this.loadAvailableExcursions(serviceEvent.service);
 			//this.loadAvailableGpxFiles(serviceEvent.service); 
 		}
 
@@ -66,31 +66,31 @@ var LeftNav = React.createClass({
 
 		console.log('loadAvailableExcursions');
 
-		var directoryReader = fileSystem.root.createReader();
+		var fileSystem = ServiceStore.getService('fileSystem');
+		if (fileSystem) {
 
-		var excursionsMenuItems = [];
-		directoryReader.readEntries(function(entries) {
-			
-			entries.forEach( (entry,index) => {
-				
-				if (entry.isDirectory) return;
+			fileSystem.list('/', 'fe').then(function(entries){
 
-				excursionsMenuItems.push({
-					key: 'excursion_' + index,
-					text: entry.name,
-					action: this.deleteExcursion.bind(this, entry),
-					/* style: {
-						overflow: 'hidden'
-					} */
+				var excursionsMenuItems = [];
+
+				entries.forEach( (entry,index) => {
+					if (entry.isDirectory) return;
+					
+					excursionsMenuItems.push({
+						key: 'excursion_' + index,
+						text: entry.name,
+						action: this.deleteExcursion.bind(this, entry)
+					});
+
 				});
 
-			});
+				this.setState({
+					excursionsMenuItems: excursionsMenuItems
+				});
 
-			this.setState({
-				excursionsMenuItems: excursionsMenuItems
-			});
+			}.bind(this));
 
-		}.bind(this), this.errorAccessingFileSystem);
+		}
 
 	},
 
@@ -134,13 +134,6 @@ var LeftNav = React.createClass({
 		this.refs.newDialog.refs.dialog.show();
 	},
 
-	forceLeftNavUpdate: function() {
-		
-		this.loadAvailableExcursions();
-
-		//this.forceUpdate();
-	},
-
     render: function() {
        
     	console.log('LeftNav render');
@@ -153,6 +146,7 @@ var LeftNav = React.createClass({
 	            <MuiLeftNav 
 	            	ref="muiLeftNav" 
 	          		docked={false} 
+	          		disableSwipeToOpen={true}
 	          		menuItems={concatenatedMenuItems} 
 	          		onChange={this.handleLeftNavEvent} />
 	      		<NewDialog 

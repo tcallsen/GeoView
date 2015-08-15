@@ -187,6 +187,20 @@ module.exports = [
         "clobbers": [
             "window.FileTransfer"
         ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.console/www/console-via-logger.js",
+        "id": "org.apache.cordova.console.console",
+        "clobbers": [
+            "console"
+        ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.console/www/logger.js",
+        "id": "org.apache.cordova.console.logger",
+        "clobbers": [
+            "cordova.logger"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -194,7 +208,8 @@ module.exports.metadata =
 {
     "cordova-plugin-geolocation": "1.0.1",
     "cordova-plugin-file": "2.1.1-dev",
-    "cordova-plugin-file-transfer": "1.2.1"
+    "cordova-plugin-file-transfer": "1.2.1",
+    "org.apache.cordova.console": "0.2.13"
 }
 // BOTTOM OF METADATA
 });

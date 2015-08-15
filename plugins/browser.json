@@ -15,6 +15,9 @@
         },
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "co.stample"
+        },
+        "org.apache.cordova.console": {
+            "PACKAGE_NAME": "co.stample"
         }
     },
     "dependent_plugins": {}

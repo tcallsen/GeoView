@@ -178,7 +178,8 @@ module.exports.metadata =
 {
     "cordova-plugin-geolocation": "1.0.1",
     "cordova-plugin-file": "2.1.1-dev",
-    "cordova-plugin-file-transfer": "1.2.1"
+    "cordova-plugin-file-transfer": "1.2.1",
+    "org.apache.cordova.console": "0.2.13"
 }
 // BOTTOM OF METADATA
 });

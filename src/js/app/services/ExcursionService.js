@@ -1,5 +1,8 @@
 'use strict';
 
+var Actions = require('../actions');
+var blobUtil = require('blob-util');
+
 // HANDLES swapping of excursions
 var ExcursionService = {
 
@@ -10,6 +13,13 @@ var ExcursionService = {
 		console.log('new Excursion created');
 
 		this.excursion = new Excursion(args);
+
+		//emit excursion out to app
+		Actions.triggerServiceEvent({
+            name: 'excursion',
+            event: 'update',
+            service: this.excursion
+        });
 
 		return this.excursion;
 
@@ -28,5 +38,9 @@ var Excursion = function(args) {
 	this.gpxBlob = args.gpxBlob;
 
 }
+
+Excursion.prototype.getGpxPlainText = function() {
+	return blobUtil.blobToBinaryString(this.gpxBlob);
+};
 
 module.exports = ExcursionService;

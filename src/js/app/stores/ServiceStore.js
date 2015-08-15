@@ -33,14 +33,15 @@ var ServiceStore = Reflux.createStore({
 	},
 
 	onTriggerServiceEvent: function(args) {
-		this.emitServiceEvent(args.name, args.action, this.getService(args.name));
+		this.emitServiceEvent(args.name, args.event, args.payload, args.service || this.getService(args.name));
 	},
 
-	emitServiceEvent: function(serviceName, event, service) {
+	emitServiceEvent: function(serviceName, event, payload, service) {
 
 		this.trigger({
 			name: serviceName,
 			event: event,
+			payload: payload,
 			service: service
 		});
 

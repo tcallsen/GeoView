@@ -8,8 +8,9 @@ var LeftNav   = require("./components/leftNav");
 
 var ServiceStore = require('./stores/ServiceStore');
 var Actions = require('./actions');
-
+ 
 var ExcursionService = require('./services/ExcursionService');
+var FileService = require('./services/FileService');
 
 var mui = require('material-ui'); 
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -36,6 +37,28 @@ var GeoView = React.createClass({
 				service: fileSystem
 			});
 		}, this.errorAccessingFileSystem);
+
+		/*	PROMISE LIBRARY
+		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
+			
+			var promiseFileSystem = CordovaPromiseFS({
+				persistent: true, // or false
+				storageSize: 20*1024*1024, // storage size in bytes, default 20MB 
+				concurrency: 3, // how many concurrent uploads/downloads?
+				Promise: require('bluebird') // Your favorite Promise/A+ library! 
+			});
+
+			Actions.registerService({
+				name: 'fileSystem',
+				service: promiseFileSystem
+			});
+		}, this.errorAccessingFileSystem); */
+
+		// FILE SERVICE
+		Actions.registerService({
+			name: 'file',
+			service: FileService
+		});
 
 
 		// FILE TRANSFER & other services passed in from parent app.js
