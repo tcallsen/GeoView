@@ -39,15 +39,35 @@
 }
 /* END Material Design Icons */
 
+/* Roboto font */
+@font-face {
+    font-family: 'robotoregular';
+    src: url('./assets/font/Roboto-Regular-webfont.eot');
+    src: url('./assets/font/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('./assets/font/Roboto-Regular-webfont.woff') format('woff'),
+         url('./assets/font/Roboto-Regular-webfont.ttf') format('truetype'),
+         url('./assets/font/Roboto-Regular-webfont.svg#robotoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body, div#reactAppContainer, div#GeoView {
 	height: 100%;
 	padding: 0;
 	margin: 0;
   overflow: hidden;
+  font-family: robotoregular;
 }
 
 h1 { color: @brand-color; } 
 
+
+/* OpenLayers styles */
+div#map {
+  height: 100%;
+  width: 100%;
+}
+  
 
 .ol-mouse-position {
   top: 8px;

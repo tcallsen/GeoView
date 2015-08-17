@@ -2,9 +2,11 @@
 
 var React = require("react");
 var localForage = require('localforage');
+var Reflux = require("reflux");
 
 var Map     = require("./components/Map");
 var LeftNav   = require("./components/leftNav");
+var ExcursionToolbar  = require("./components/excursionToolbar");
 
 var ServiceStore = require('./stores/ServiceStore');
 var Actions = require('./actions');
@@ -20,9 +22,13 @@ var AppBar = mui.AppBar;
 
 var GeoView = React.createClass({
     
+	mixins: [Reflux.listenToMany({
+        handleServiceEvent: ServiceStore
+    })],
+
 	getInitialState: function() {
 		return {
-			
+			viewingExcursion: false
 		};
 	},
 
@@ -37,22 +43,6 @@ var GeoView = React.createClass({
 				service: fileSystem
 			});
 		}, this.errorAccessingFileSystem);
-
-		/*	PROMISE LIBRARY
-		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
-			
-			var promiseFileSystem = CordovaPromiseFS({
-				persistent: true, // or false
-				storageSize: 20*1024*1024, // storage size in bytes, default 20MB 
-				concurrency: 3, // how many concurrent uploads/downloads?
-				Promise: require('bluebird') // Your favorite Promise/A+ library! 
-			});
-
-			Actions.registerService({
-				name: 'fileSystem',
-				service: promiseFileSystem
-			});
-		}, this.errorAccessingFileSystem); */
 
 		// FILE SERVICE
 		Actions.registerService({
@@ -94,6 +84,17 @@ var GeoView = React.createClass({
 		};
 	},
 
+	handleServiceEvent: function(serviceEvent) {
+
+        //detect if excursion update - update GeoView display accordingly
+        if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && serviceEvent.service) {
+        	this.setState({ viewingExcursion: true });
+        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && typeof serviceEvent.service === 'undefined') {
+        	this.setState({ viewingExcursion: false });
+        }
+
+    },
+
 	errorAccessingFileSystem: function(evt) {
 		console.log(evt);
 		//alert(evt.target.error.code);
@@ -105,6 +106,17 @@ var GeoView = React.createClass({
 
     render: function() {
 
+    	var style = {
+      		mapContainer: {
+	      		height: (this.state.viewingExcursion) ? 'calc(100% - 120px)' : 'calc(100% - 64px)' ,
+	      		width: '100%'
+	    	}
+    	};
+
+    	var excursionToolbar = (this.state.viewingExcursion) ?
+    		( <ExcursionToolbar /> )
+    		: null ;
+
         return (
             <div id="GeoView"> 
               	<LeftNav
@@ -113,7 +125,10 @@ var GeoView = React.createClass({
 				  	title="GeoView"
 				  	iconClassNameRight="muidocs-icon-navigation-expand-more"
 				  	onLeftIconButtonTouchTap={this.toggleLeftNav} /> 
-			  	<Map /> 
+			  	<div id='mapContainer' style={ style.mapContainer }>
+			  		<Map /> 
+		  		</div>
+		  		{ excursionToolbar }
             </div>
         );
     }
