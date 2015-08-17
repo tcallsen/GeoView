@@ -9,6 +9,7 @@
   "license": "Apache",
   "dependencies": {
     "blob-util": "^1.1.2",
+    "bluebird": "^2.9.34",
     "cordova": "~3.4.1-0.1.0",
     "cordova-ios": "^3.5.0",
     "localforage": "^1.2.4",

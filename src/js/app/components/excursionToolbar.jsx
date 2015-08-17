@@ -5,7 +5,7 @@ var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
 var Actions = require('../actions');
 
-var NewDialog   = require("./newDialog");
+var AddGpxDialog   = require("./addGpxDialog");
 
 var mui = require('material-ui'); 
 var Toolbar = mui.Toolbar;
@@ -44,11 +44,20 @@ var ExcursionToolbar = React.createClass({
 
 	},
 
-	toggleGpxVisibility: function(event, item) {
+	toggleGpxVisibility: function(event, value) {
 		
-		var excursionService = ServiceStore.getService('excursion').getCurrent();
-		excursionService.toggleGpxVisibility(this.state.excursionGpxList[0].guid);
+		//var excursionService = ServiceStore.getService('excursion').getCurrent();
+		//excursionService.toggleGpxVisibility(this.state.excursionGpxList[0].guid);
 
+		//console.log(event);
+		//console.log(value);
+
+		this.toggleAddGpxFileDialog();
+
+	},
+
+	toggleAddGpxFileDialog: function() {
+		this.refs.addGpxDialog.refs.dialog.show();
 	},
 
     render: function() {
@@ -82,18 +91,22 @@ var ExcursionToolbar = React.createClass({
 	    );
 
         return (
-            <Toolbar>
+            <div>
+	            <Toolbar>
 
-				<ToolbarGroup key={1} float="right">
-					<FontIcon className="material-icons">center_focus_strong</FontIcon>
-					<FontIcon className="material-icons">gps_not_fixed</FontIcon>
-					<ToolbarSeparator />
+					<ToolbarGroup key={1} float="right">
+						<FontIcon className="material-icons">center_focus_strong</FontIcon>
+						<FontIcon className="material-icons">gps_not_fixed</FontIcon>
+						<ToolbarSeparator />
 
-					{ gpxTracksMenu }
+						{ gpxTracksMenu }
 
-				</ToolbarGroup>
+					</ToolbarGroup>
 
-			</Toolbar>
+				</Toolbar>
+				<AddGpxDialog 
+					ref="addGpxDialog" />
+			</div>
         );
     }
 });

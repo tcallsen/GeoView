@@ -52,10 +52,23 @@ var Excursion = function(parentExcursionService, args) {
 
 	//create new gpx
 	this.gpx[utility.getGuid()] = {
-		name: args.gpx.name,
+		name: args.gpx.name || 'GPX File ' + Excursion.prototype.getGpxList().length + 1,
 		blob: args.gpx.blob,
 		visible: true
 	}
+
+};
+
+Excursion.prototype.addGpxFile = function(args) {
+
+	//create new gpx
+	this.gpx[utility.getGuid()] = {
+		name: args.name || 'GPX File ' + Excursion.prototype.getGpxList().length + 1,
+		blob: args.blob,
+		visible: true
+	}
+
+	this.parentExcursionService.triggerUpdate();
 
 };
 
@@ -81,19 +94,76 @@ Excursion.prototype.getGpxList = function() {
 
 };
 
-Excursion.prototype.getGpxFeatures = function(guid) {
+Excursion.prototype.getGpxEntry = function(guid) {
+	return this.gpx[guid];
+};
 
-	return blobUtil.blobToBinaryString(this.gpx[guid].blob).then(function(gpxPlainText){
+Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 
-		//retrieve blob in plaintext and parse into OL features
-		var gpxFeatures = new ol.format.GPX().readFeatures(gpxPlainText);
+	if (guid) {
 
-		//convert featues tp EPSG:3857
-		gpxFeatures.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
+		//RETURN FEATURE OF SPECIFIC GPX
 
-		return gpxFeatures;
+		return blobUtil.blobToBinaryString(this.gpx[guid].blob).then(function(gpxPlainText){
 
-	});
+			//retrieve blob in plaintext and parse into OL features
+			var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
+
+			//convert featues tp EPSG:3857
+			gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
+
+			return gpxFeature;
+
+		});
+
+	} else {
+
+		//gpxFeautres list - populated through the promise loop with feature for each GPX file in excursion
+		var gpxFeatures = [];
+
+		//refernces for use in closures - so dont have to .bind(this)
+		var gpxList = this.getGpxList();
+		var _serviceContext = this; //used in retireving gpxFeatures below
+
+		//iteration variables - used to determine if loop needs to continue
+		var i = 0;
+		var gpxListLength = gpxList.length;
+
+		return new Promise(function (masterFulfill, masterReject) {
+
+			utility.promiseWhile(function() {
+			    // Condition for stopping
+			    return i < gpxListLength;
+			}, function() {
+			    // Action to run, should return a promise
+			    var gpxEntry = Excursion.prototype.getGpxEntry.call(_serviceContext,gpxList[i].guid);
+			    return new Promise(function (fulfill, reject) {
+
+			    	blobUtil.blobToBinaryString(gpxEntry.blob).then(function(gpxPlainText){
+
+						//retrieve blob in plaintext and parse into OL features
+						var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
+
+						//convert featues tp EPSG:3857
+						gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
+
+						gpxFeatures.push(gpxFeature[0]); //need to remove from array it is returned in
+
+						//handle iteration
+						++i;
+						fulfill();
+
+					});
+
+				});
+
+			}).then(function() {
+			    masterFulfill(gpxFeatures);
+			});
+
+		});
+
+	}
 
 }
 
@@ -101,7 +171,5 @@ Excursion.prototype.toggleGpxVisibility = function(guid) {
 	this.gpx[guid].visible = !this.gpx[guid].visible;
 	this.parentExcursionService.triggerUpdate();
 }
-
-
 
 module.exports = ExcursionService;

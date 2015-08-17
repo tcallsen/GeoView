@@ -38,29 +38,22 @@ var Map = React.createClass({
         //detect if filesystem update - if so reload excursions and gpx files
         if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update') {
 
-            console.log('map recieved excursion update', serviceEvent);
-
             //clear existing features
             this.state.excursionLayer.getSource().clear();
 
             //draw new excursions if visible
             var excursionService = serviceEvent.service;
 
-            excursionService.getGpxList().forEach( gpx => {
+            //retrieve GPX features and draw on map
+            excursionService.getGpxFeatures(null, true).then(function(gpxFeatures) {
 
-                if (!gpx.visible) return;
+                this.state.excursionLayer.setSource(new ol.source.Vector({
+                    features: gpxFeatures
+                }));
 
-                excursionService.getGpxFeatures(gpx.guid).then(function(gpxFeatures) {
+                this.state.map.getView().setCenter( ol.extent.getCenter(gpxFeatures[0].getGeometry().getExtent()));
 
-                    this.state.excursionLayer.setSource(new ol.source.Vector({
-                        features: gpxFeatures
-                    }));
-
-                    this.state.map.getView().setCenter( ol.extent.getCenter(gpxFeatures[0].getGeometry().getExtent()));
-
-                 }.bind(this));
-
-            });
+             }.bind(this));
 
         }
 
