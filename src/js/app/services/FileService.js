@@ -3,6 +3,8 @@
 var ServiceStore = require('../stores/ServiceStore');
 var blobUtil = require('blob-util');
 
+var utility = require('../utility');
+
 var FileService = {
 
 	write: function(path, fileBlob){
@@ -34,7 +36,7 @@ var FileService = {
 
 	},
 
-	read: function(path){
+	read: function(path) {
 
 		var fileSystem = ServiceStore.getService('fileSystem');
         if (fileSystem) {
@@ -63,7 +65,33 @@ var FileService = {
 
 	},
 
-	download: function(path){
+	download: function(url, options){
+
+		var fileTransfer = new FileTransfer();
+		var uri = encodeURI(url);
+
+		options = options || {};
+		var desintationPath = options.desintationPath || 'cdvfile://localhost/persistent/gpx/' + utility.getGuid() + '.gpx';
+
+		return new Promise(function (fulfill, reject) {
+
+			fileTransfer.download(
+			    uri,
+			    desintationPath,
+			    function(entry) {
+			        fulfill(entry);
+			    },
+			    function(error) {
+			        reject(error);
+			    },
+			    true
+			);
+
+		});
+
+	},
+
+	getFileEntry: function(path) {
 
 		var fileSystem = ServiceStore.getService('fileSystem');
         if (fileSystem) {
@@ -77,14 +105,7 @@ var FileService = {
 
 			    //define fulfill path - write operation
 	            fileSystem.root.getFile(path, null, function(fileEntry) {
-	            	fileEntry.file(function(file) {
-	            		var reader = new FileReader();
-	            		reader.onloadend = function(evt) {
-				            console.log("Read as text");
-				            fulfill(evt.target.result);
-				        };
-				        reader.readAsText(file);
-	        		}, fileSystemFail);
+	            	fulfill(fileEntry);
 	            }, fileSystemFail) 
 
             });
