@@ -60,6 +60,26 @@ var ExcursionToolbar = React.createClass({
 		this.refs.addGpxDialog.refs.dialog.show();
 	},
 
+	saveExcursion: function() {
+
+		var fileService = ServiceStore.getService('file');
+		var excursionService = ServiceStore.getService('excursion').getCurrent();
+		
+		var jsonBlob = excursionService.toJsonBlob();
+
+		fileService.write('/exc/excursionA.exc', jsonBlob).then(function() {
+
+			alert('Save complete');
+
+			Actions.triggerServiceEvent({
+                name: 'fileSystem',
+                event: 'update'
+            });
+
+		});
+		
+	},
+
     render: function() {
 
     	//build gpx tracks menu
@@ -95,8 +115,11 @@ var ExcursionToolbar = React.createClass({
 	            <Toolbar>
 
 					<ToolbarGroup key={1} float="right">
+						
 						<FontIcon className="material-icons">center_focus_strong</FontIcon>
 						<FontIcon className="material-icons">gps_not_fixed</FontIcon>
+						<FontIcon className="material-icons" onClick={this.saveExcursion}>save</FontIcon>
+						
 						<ToolbarSeparator />
 
 						{ gpxTracksMenu }

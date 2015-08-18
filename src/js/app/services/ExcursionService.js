@@ -34,6 +34,24 @@ var ExcursionService = {
             event: 'update',
             service: this.excursion
         });
+	},
+
+	loadFromJsonBlob: function(jsonBlob) {
+
+		blobUtil.blobToBinaryString(jsonBlob).then(function(jsonString) {
+			
+			//parse json blob into object
+			var excursion = JSON.parse(jsonString);
+
+			console.log(excursion);
+
+			excursion.loadFromFile = true;
+
+			//create new excursion with object
+			this.create(excursion);
+
+		}.bind(this));
+
 	}
 
 }
@@ -47,15 +65,22 @@ var Excursion = function(parentExcursionService, args) {
 	//save name
 	this.name = args.name;
 
-	//create gpx data structure
-	this.gpx = {};
+	//logic split based on if .create is called when creating new Excursion or loading from file
+	if (!args.loadFromFile) {
 
-	//create new gpx
-	this.gpx[utility.getGuid()] = {
-		name: args.gpx.name || 'GPX File ' + Excursion.prototype.getGpxList().length + 1,
-		blob: args.gpx.blob,
-		visible: true
-	}
+		//create gpx data structure
+		this.gpx = {};
+
+		//create new gpx
+		this.gpx[utility.getGuid()] = {
+			name: args.gpx.name || 'GPX File ' + (parseInt(this.getGpxList().length) + 1),
+			content: args.gpx.content,
+			visible: true
+		}
+
+	} else this.gpx = args.gpx;
+
+	return this;
 
 };
 
@@ -63,8 +88,8 @@ Excursion.prototype.addGpxFile = function(args) {
 
 	//create new gpx
 	this.gpx[utility.getGuid()] = {
-		name: args.name || 'GPX File ' + Excursion.prototype.getGpxList().length + 1,
-		blob: args.blob,
+		name: args.name || 'GPX File ' + (parseInt(this.getGpxList().length) + 1),
+		content: args.content,
 		visible: true
 	}
 
@@ -104,64 +129,40 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 
 		//RETURN FEATURE OF SPECIFIC GPX
 
-		return blobUtil.blobToBinaryString(this.gpx[guid].blob).then(function(gpxPlainText){
+		var gpxPlainText = this.gpx[guid].content;
 
-			//retrieve blob in plaintext and parse into OL features
-			var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
+		//retrieve blob in plaintext and parse into OL features
+		var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
 
-			//convert featues tp EPSG:3857
-			gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
+		//convert featues tp EPSG:3857
+		gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
 
-			return gpxFeature;
-
-		});
+		return gpxFeature;
 
 	} else {
 
-		//gpxFeautres list - populated through the promise loop with feature for each GPX file in excursion
+		//gpxFeautres list - populated through loop with feature for each GPX file in excursion
 		var gpxFeatures = [];
 
 		//refernces for use in closures - so dont have to .bind(this)
 		var gpxList = this.getGpxList();
 		var _serviceContext = this; //used in retireving gpxFeatures below
 
-		//iteration variables - used to determine if loop needs to continue
-		var i = 0;
-		var gpxListLength = gpxList.length;
+		Object.keys(this.gpx).forEach( gpxKey => {
 
-		return new Promise(function (masterFulfill, masterReject) {
+			var gpxPlainText = this.gpx[gpxKey].content;
 
-			utility.promiseWhile(function() {
-			    // Condition for stopping
-			    return i < gpxListLength;
-			}, function() {
-			    // Action to run, should return a promise
-			    var gpxEntry = Excursion.prototype.getGpxEntry.call(_serviceContext,gpxList[i].guid);
-			    return new Promise(function (fulfill, reject) {
+			//retrieve blob in plaintext and parse into OL features
+			var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
 
-			    	blobUtil.blobToBinaryString(gpxEntry.blob).then(function(gpxPlainText){
+			//convert featues tp EPSG:3857
+			gpxFeature[0].getGeometry().transform( 'EPSG:4326', 'EPSG:3857');
 
-						//retrieve blob in plaintext and parse into OL features
-						var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
-
-						//convert featues tp EPSG:3857
-						gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
-
-						gpxFeatures.push(gpxFeature[0]); //need to remove from array it is returned in
-
-						//handle iteration
-						++i;
-						fulfill();
-
-					});
-
-				});
-
-			}).then(function() {
-			    masterFulfill(gpxFeatures);
-			});
+			gpxFeatures.push(gpxFeature[0]); //need to remove from array it is returned in
 
 		});
+
+		return gpxFeatures;
 
 	}
 
@@ -170,6 +171,69 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 Excursion.prototype.toggleGpxVisibility = function(guid) {
 	this.gpx[guid].visible = !this.gpx[guid].visible;
 	this.parentExcursionService.triggerUpdate();
+}
+
+Excursion.prototype.toJsonBlob = function() {
+
+	var _thisExcursion = this;
+
+	var i = 0;
+	var gpxKeys = Object.keys(_thisExcursion.gpx);
+
+	var gpxReturn = {};
+
+	//convert gpx blobs to binary string (in preparation for JSON.stringify)
+	return new Promise(function (loopFulfill, masterReject) {
+
+		utility.promiseWhile(function() {
+		    // Condition for stopping
+		    return i < gpxKeys.length;
+		}, function() {
+		    // Action to run, should return a promise
+		    return new Promise(function (fulfill, reject) {
+
+				var gpxEntry = _thisExcursion.gpx[gpxKeys[i]];
+
+				var binaryBlob = blobUtil.blobToBinaryString(gpxEntry.blob).then(function(binaryString) {
+					
+					//reassign blob property to binaryString
+					gpxEntry.blob = binaryString;
+
+					//save updated gpxEntry to gpxReturn object
+					gpxReturn[gpxKeys[i]] = gpxEntry;
+
+					//iteration
+					++i;
+					fulfill();
+
+				});
+
+			});
+
+		}).then(function() {
+		    loopFulfill();
+		});
+
+	}).then(function() {
+	    
+		console.log("REACHED THEN");
+
+		//have to create export because of link to parent server
+		var excursionExport = {
+			name: _thisExcursion.name,
+			gpx: gpxReturn
+		}
+
+		console.log('excursionExport');
+		console.log(excursionExport);
+
+		console.log('_thisExcursion');
+		console.log(_thisExcursion);
+
+		//return blobUtil.createBlob( [ JSON.stringify(excursionExport) ] , {type: 'application/json'} );
+
+	});
+
 }
 
 module.exports = ExcursionService;

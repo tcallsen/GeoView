@@ -12,6 +12,8 @@ var AppBar = mui.AppBar;
 var MuiLeftNav = mui.LeftNav;
 var MenuItem = mui.MenuItem;
 
+var utility = require('../utility');
+
 var LeftNav = React.createClass({
 
 	mixins: [Reflux.listenToMany({
@@ -56,8 +58,7 @@ var LeftNav = React.createClass({
 
 		//detect if filesystem update - if so reload excursions and gpx files
 		if (serviceEvent.name === 'fileSystem') {
-			//this.loadAvailableExcursions(serviceEvent.service);
-			//this.loadAvailableGpxFiles(serviceEvent.service); 
+			this.loadAvailableExcursions(serviceEvent.service);
 		}
 
 	},
@@ -66,31 +67,31 @@ var LeftNav = React.createClass({
 
 		console.log('loadAvailableExcursions');
 
-		var fileSystem = ServiceStore.getService('fileSystem');
-		if (fileSystem) {
+		var fileService = ServiceStore.getService('file');
+		fileService.getDirectoryEntries("/exc/").then(function(directoryEntries) {
 
-			fileSystem.list('/', 'fe').then(function(entries){
+			var excursionEntries = directoryEntries.filter(function(entry) {
+				return utility.endsWith(entry.fullPath, '.exc');
+			});
 
-				var excursionsMenuItems = [];
+			var excursionsMenuItems = [];
 
-				entries.forEach( (entry,index) => {
-					if (entry.isDirectory) return;
-					
-					excursionsMenuItems.push({
-						key: 'excursion_' + index,
-						text: entry.name,
-						action: this.deleteExcursion.bind(this, entry)
-					});
-
+			excursionEntries.forEach( (entry,index) => {
+				if (entry.isDirectory) return;
+				
+				excursionsMenuItems.push({
+					key: 'excursion_' + index,
+					text: entry.name,
+					action: this.loadExcursion.bind(this, entry)
 				});
 
-				this.setState({
-					excursionsMenuItems: excursionsMenuItems
-				});
+			});
 
-			}.bind(this));
+			this.setState({
+				excursionsMenuItems: excursionsMenuItems
+			});
 
-		}
+		}.bind(this));
 
 	},
 
@@ -99,7 +100,17 @@ var LeftNav = React.createClass({
 	},
 
 	loadExcursion: function(menuEntry) {
-		alert(menuEntry.name);
+
+		var excursionService = ServiceStore.getService('excursion');
+		var fileService = ServiceStore.getService('file');
+		
+		fileService.read(menuEntry.fullPath).then(function(jsonBlob) {
+
+			excursionService.loadFromJsonBlob(jsonBlob);
+
+		});
+
+
 	},
 
 	deleteExcursion: function(menuEntry) {
@@ -127,6 +138,7 @@ var LeftNav = React.createClass({
 	},
 
 	handleLeftNavEvent: function(e, selectedIndex, menuItem) {
+		console.log('handleLeftNavEvent', menuItem);
 		menuItem.action();
 	},
 

@@ -44,16 +44,16 @@ var Map = React.createClass({
             //draw new excursions if visible
             var excursionService = serviceEvent.service;
 
+            console.log('excursionService in map', serviceEvent.service);
+
             //retrieve GPX features and draw on map
-            excursionService.getGpxFeatures(null, true).then(function(gpxFeatures) {
+            var gpxFeatures = excursionService.getGpxFeatures(null, true);
 
-                this.state.excursionLayer.setSource(new ol.source.Vector({
-                    features: gpxFeatures
-                }));
+            this.state.excursionLayer.setSource(new ol.source.Vector({
+                features: gpxFeatures
+            }));
 
-                this.state.map.getView().setCenter( ol.extent.getCenter(gpxFeatures[0].getGeometry().getExtent()));
-
-             }.bind(this));
+            this.state.map.getView().setCenter( ol.extent.getCenter(gpxFeatures[0].getGeometry().getExtent()));
 
         }
 

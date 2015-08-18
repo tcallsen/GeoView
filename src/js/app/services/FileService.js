@@ -65,6 +65,35 @@ var FileService = {
 
 	},
 
+	readAsText: function(path) {
+
+		var fileSystem = ServiceStore.getService('fileSystem');
+        if (fileSystem) {
+
+        	return new Promise(function (fulfill, reject) {
+
+        		//define reject path - fileSystem error
+        		var fileSystemFail = function(event) { 
+			        reject(event);
+			    };
+
+			    //define fulfill path - write operation
+	            fileSystem.root.getFile(path, null, function(fileEntry) {
+	            	fileEntry.file(function(file) {
+	            		var reader = new FileReader();
+	            		reader.onloadend = function(evt) {
+				            fulfill(evt.target.result);
+				        };
+				        reader.readAsText(file);
+	        		}, fileSystemFail);
+	            }, fileSystemFail) 
+
+            });
+
+    	}
+
+	},
+
 	download: function(url, options){
 
 		var fileTransfer = new FileTransfer();
@@ -109,6 +138,34 @@ var FileService = {
 	            }, fileSystemFail) 
 
             });
+
+    	}
+
+	},
+
+	getDirectoryEntries: function(path) {
+
+		var fileSystem = ServiceStore.getService('fileSystem');
+        if (fileSystem) {
+
+        	return new Promise(function (fulfill, reject) {
+
+	        	//define reject path - fileSystem error
+	    		var fileSystemFail = function(event) { 
+			        reject(event);
+			    };
+
+	        	fileSystem.root.getDirectory(path, { create: true }, function(directoryEntry) {
+
+	        		var directoryReader = directoryEntry.createReader();
+
+	        		directoryReader.readEntries(function(entries) {
+	        			fulfill(entries);
+	        		}, fileSystemFail);
+
+	        	}, fileSystemFail)
+
+	    	});
 
     	}
 

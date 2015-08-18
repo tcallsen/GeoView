@@ -32,4 +32,58 @@ utility.promiseWhile = function(condition, action) {
     return resolver.promise;
 }; 
 
+utility.endsWith = function(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
 module.exports = utility;
+
+/* utility.promiseWhile() example
+
+  //gpxFeautres list - populated through the promise loop with feature for each GPX file in excursion
+  var gpxFeatures = [];
+
+  //refernces for use in closures - so dont have to .bind(this)
+  var gpxList = this.getGpxList();
+  var _serviceContext = this; //used in retireving gpxFeatures below
+
+  //iteration variables - used to determine if loop needs to continue
+  var i = 0;
+  var gpxListLength = gpxList.length;
+
+  return new Promise(function (masterFulfill, masterReject) {
+
+    utility.promiseWhile(function() {
+        // Condition for stopping
+        return i < gpxListLength;
+    }, function() {
+        // Action to run, should return a promise
+        var gpxEntry = Excursion.prototype.getGpxEntry.call(_serviceContext,gpxList[i].guid);
+        return new Promise(function (fulfill, reject) {
+
+          blobUtil.blobToBinaryString(gpxEntry.blob).then(function(gpxPlainText){
+
+          //retrieve blob in plaintext and parse into OL features
+          var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
+
+          //convert featues tp EPSG:3857
+          gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
+
+          gpxFeatures.push(gpxFeature[0]); //need to remove from array it is returned in
+
+          //handle iteration
+          ++i;
+          fulfill();
+
+        });
+
+      });
+
+    }).then(function() {
+        masterFulfill(gpxFeatures);
+    });
+
+  });
+
+*/
+
