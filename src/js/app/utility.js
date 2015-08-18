@@ -40,6 +40,9 @@ module.exports = utility;
 
 /* utility.promiseWhile() example
 
+
+  1)
+
   //gpxFeautres list - populated through the promise loop with feature for each GPX file in excursion
   var gpxFeatures = [];
 
@@ -82,6 +85,62 @@ module.exports = utility;
     }).then(function() {
         masterFulfill(gpxFeatures);
     });
+
+  });
+
+
+
+  2)
+
+  //convert gpx blobs to binary string (in preparation for JSON.stringify)
+  return new Promise(function (loopFulfill, masterReject) {
+
+    utility.promiseWhile(function() {
+        // Condition for stopping
+        return i < gpxKeys.length;
+    }, function() {
+        // Action to run, should return a promise
+        return new Promise(function (fulfill, reject) {
+
+        var gpxEntry = _thisExcursion.gpx[gpxKeys[i]];
+
+        var binaryBlob = blobUtil.blobToBinaryString(gpxEntry.blob).then(function(binaryString) {
+          
+          //reassign blob property to binaryString
+          gpxEntry.blob = binaryString;
+
+          //save updated gpxEntry to gpxReturn object
+          gpxReturn[gpxKeys[i]] = gpxEntry;
+
+          //iteration
+          ++i;
+          fulfill();
+
+        });
+
+      });
+
+    }).then(function() {
+        loopFulfill();
+    });
+
+  }).then(function() {
+      
+    console.log("REACHED THEN");
+
+    //have to create export because of link to parent server
+    var excursionExport = {
+      name: _thisExcursion.name,
+      gpx: gpxReturn
+    }
+
+    console.log('excursionExport');
+    console.log(excursionExport);
+
+    console.log('_thisExcursion');
+    console.log(_thisExcursion);
+
+    //return blobUtil.createBlob( [ JSON.stringify(excursionExport) ] , {type: 'application/json'} );
 
   });
 

@@ -5,6 +5,8 @@ var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
 var Actions = require('../actions');
 
+var utility = require('../utility');
+
 var AddGpxDialog   = require("./addGpxDialog");
 
 var mui = require('material-ui'); 
@@ -67,7 +69,7 @@ var ExcursionToolbar = React.createClass({
 		
 		var jsonBlob = excursionService.toJsonBlob();
 
-		fileService.write('/exc/excursionA.exc', jsonBlob).then(function() {
+		fileService.write('/exc/' + utility.removeSpaces(excursionService.name) + '.exc', jsonBlob).then(function() {
 
 			alert('Save complete');
 

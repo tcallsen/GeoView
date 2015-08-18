@@ -43,8 +43,6 @@ var ExcursionService = {
 			//parse json blob into object
 			var excursion = JSON.parse(jsonString);
 
-			console.log(excursion);
-
 			excursion.loadFromFile = true;
 
 			//create new excursion with object
@@ -175,64 +173,15 @@ Excursion.prototype.toggleGpxVisibility = function(guid) {
 
 Excursion.prototype.toJsonBlob = function() {
 
-	var _thisExcursion = this;
+	//have to create export because of link to parent server
+	var excursionExport = {
+		name: this.name,
+		gpx: this.gpx
+	}
 
-	var i = 0;
-	var gpxKeys = Object.keys(_thisExcursion.gpx);
+	console.log(JSON.stringify(excursionExport));
 
-	var gpxReturn = {};
-
-	//convert gpx blobs to binary string (in preparation for JSON.stringify)
-	return new Promise(function (loopFulfill, masterReject) {
-
-		utility.promiseWhile(function() {
-		    // Condition for stopping
-		    return i < gpxKeys.length;
-		}, function() {
-		    // Action to run, should return a promise
-		    return new Promise(function (fulfill, reject) {
-
-				var gpxEntry = _thisExcursion.gpx[gpxKeys[i]];
-
-				var binaryBlob = blobUtil.blobToBinaryString(gpxEntry.blob).then(function(binaryString) {
-					
-					//reassign blob property to binaryString
-					gpxEntry.blob = binaryString;
-
-					//save updated gpxEntry to gpxReturn object
-					gpxReturn[gpxKeys[i]] = gpxEntry;
-
-					//iteration
-					++i;
-					fulfill();
-
-				});
-
-			});
-
-		}).then(function() {
-		    loopFulfill();
-		});
-
-	}).then(function() {
-	    
-		console.log("REACHED THEN");
-
-		//have to create export because of link to parent server
-		var excursionExport = {
-			name: _thisExcursion.name,
-			gpx: gpxReturn
-		}
-
-		console.log('excursionExport');
-		console.log(excursionExport);
-
-		console.log('_thisExcursion');
-		console.log(_thisExcursion);
-
-		//return blobUtil.createBlob( [ JSON.stringify(excursionExport) ] , {type: 'application/json'} );
-
-	});
+	return blobUtil.createBlob( [ JSON.stringify(excursionExport) ] , {type: 'application/json'} );
 
 }
 
