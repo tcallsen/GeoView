@@ -53,7 +53,10 @@ var Map = React.createClass({
                 features: gpxFeatures
             }));
 
-            this.state.map.getView().setCenter( ol.extent.getCenter(gpxFeatures[0].getGeometry().getExtent()));
+            //center map on all enabled gpx features
+            var featureExtent = new ol.extent.createEmpty();
+            gpxFeatures.forEach( gpxFeature => ol.extent.extend(featureExtent, gpxFeature.getGeometry().getExtent()) );
+            if (featureExtent !== [0,0,0,0]) this.state.map.getView().setCenter( ol.extent.getCenter(featureExtent) );
 
         }
 
