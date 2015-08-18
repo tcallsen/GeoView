@@ -46,16 +46,9 @@ var ExcursionToolbar = React.createClass({
 
 	},
 
-	toggleGpxVisibility: function(event, value) {
-		
-		//var excursionService = ServiceStore.getService('excursion').getCurrent();
-		//excursionService.toggleGpxVisibility(this.state.excursionGpxList[0].guid);
-
-		//console.log(event);
-		//console.log(value);
-
-		this.toggleAddGpxFileDialog();
-
+	toggleGpxVisibility: function(guid) {
+		var excursionService = ServiceStore.getService('excursion').getCurrent();
+		excursionService.toggleGpxVisibility(guid);
 	},
 
 	toggleAddGpxFileDialog: function() {
@@ -94,7 +87,7 @@ var ExcursionToolbar = React.createClass({
 					key={'gpx_'+index}
 					primaryText={gpx.name} 
 					checked={gpx.visible}
-					value={gpx.guid} />
+					onClick={this.toggleGpxVisibility.bind(this, gpx.guid)} />
 			);
 		});
 
@@ -106,9 +99,9 @@ var ExcursionToolbar = React.createClass({
 		)
 
     	var gpxTracksMenu = (
-    		<IconMenu iconButtonElement={gpxMenuIcon} onItemTouchTap={this.toggleGpxVisibility} openDirection='top-left'>
+    		<IconMenu iconButtonElement={gpxMenuIcon} openDirection='top-left'>
 		      { gpxMenu }
-		      <MenuItem primaryText="Add GPX File.." />
+		      <MenuItem primaryText="Add GPX File.." onClick={this.toggleAddGpxFileDialog} />
 		    </IconMenu>
 	    );
 

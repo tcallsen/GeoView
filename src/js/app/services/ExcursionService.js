@@ -148,6 +148,9 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 
 		Object.keys(this.gpx).forEach( gpxKey => {
 
+			//if onlyVisible then skip over non-visible gpx features
+			if (onlyVisible && !this.gpx[gpxKey].visible) return;
+
 			var gpxPlainText = this.gpx[gpxKey].content;
 
 			//retrieve blob in plaintext and parse into OL features
