@@ -99,10 +99,12 @@ var ExcursionToolbar = React.createClass({
 		)
 
     	var gpxTracksMenu = (
-    		<IconMenu iconButtonElement={gpxMenuIcon} openDirection='top-left'>
-		      { gpxMenu }
-		      <MenuItem primaryText="Add GPX File.." onClick={this.toggleAddGpxFileDialog} />
-		    </IconMenu>
+    		<div className="toolbarIconMenu">
+	    		<IconMenu iconButtonElement={gpxMenuIcon} openDirection='top-left'>
+					{ gpxMenu }
+					<MenuItem primaryText="Add GPX File.." onClick={this.toggleAddGpxFileDialog} />
+			    </IconMenu>
+		    </div>
 	    );
 
         return (

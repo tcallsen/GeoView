@@ -61,14 +61,12 @@ html, body, div#reactAppContainer, div#GeoView {
 
 h1 { color: @brand-color; } 
 
-
 /* OpenLayers styles */
 div#map {
   height: 100%;
   width: 100%;
 }
   
-
 .ol-mouse-position {
   top: 8px;
   right: 8px;
@@ -318,3 +316,22 @@ div#map {
 .ol-overviewmap-box {
   border: 2px dotted rgba(0,60,136,0.7);
 }
+
+
+
+/* excursion toolbar styles */
+div.toolbarIconMenu {
+  display: inline-block;
+  position: relative;
+  margin: 16px 0 10px 16px;
+}
+
+div.toolbarIconMenu span {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+div.toolbarIconMenu:hover span {
+  color: rgba(0,0,0,1) !important;
+  cursor: pointer;
+}
+

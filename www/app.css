@@ -297,3 +297,16 @@ div#map {
 .ol-overviewmap-box {
   border: 2px dotted rgba(0, 60, 136, 0.7);
 }
+/* excursion toolbar styles */
+div.toolbarIconMenu {
+  display: inline-block;
+  position: relative;
+  margin: 16px 0 10px 16px;
+}
+div.toolbarIconMenu span {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+div.toolbarIconMenu:hover span {
+  color: #000000 !important;
+  cursor: pointer;
+}
