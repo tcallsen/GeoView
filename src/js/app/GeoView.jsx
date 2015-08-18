@@ -28,7 +28,7 @@ var GeoView = React.createClass({
 
 	getInitialState: function() {
 		return {
-			viewingExcursion: false
+			excursion: false
 		};
 	},
 
@@ -88,9 +88,9 @@ var GeoView = React.createClass({
 
         //detect if excursion update - update GeoView display accordingly
         if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && serviceEvent.service) {
-        	this.setState({ viewingExcursion: true });
+        	this.setState({ excursion: serviceEvent.service });
         } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && typeof serviceEvent.service === 'undefined') {
-        	this.setState({ viewingExcursion: false });
+        	this.setState({ excursion: null });
         }
 
     },
@@ -108,13 +108,13 @@ var GeoView = React.createClass({
 
     	var style = {
       		mapContainer: {
-	      		height: (this.state.viewingExcursion) ? 'calc(100% - 120px)' : 'calc(100% - 64px)' ,
+	      		height: (this.state.excursion) ? 'calc(100% - 120px)' : 'calc(100% - 64px)' ,
 	      		width: '100%'
 	    	}
     	};
 
-    	var excursionToolbar = (this.state.viewingExcursion) ?
-    		( <ExcursionToolbar /> )
+    	var excursionToolbar = (this.state.excursion) ?
+    		( <ExcursionToolbar excursion={this.state.excursion} /> )
     		: null ;
 
         return (

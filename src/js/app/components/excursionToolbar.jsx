@@ -21,34 +21,18 @@ var MenuDivider = require('material-ui/lib/menus/menu-divider');
 
 var ExcursionToolbar = React.createClass({
 
-	mixins: [Reflux.listenToMany({
+	/* mixins: [Reflux.listenToMany({
         handleServiceEvent: ServiceStore
-    })],
+    })], */
     
 	getInitialState: function() {
 		
-		//retrieve initial list of GPX files
-		var excursionService = ServiceStore.getService('excursion').getCurrent();
-
-		return {
-			excursionGpxList: excursionService.getGpxList()
-		};
-
-	},
-
-	handleServiceEvent: function(serviceEvent) {
-
-		if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update') {
-			this.setState({
-				excursionGpxList: serviceEvent.service.getGpxList()
-			});
-		}
+		return { };
 
 	},
 
 	toggleGpxVisibility: function(guid) {
-		var excursionService = ServiceStore.getService('excursion').getCurrent();
-		excursionService.toggleGpxVisibility(guid);
+		this.props.excursion.toggleGpxVisibility(guid);
 	},
 
 	toggleAddGpxFileDialog: function() {
@@ -58,11 +42,10 @@ var ExcursionToolbar = React.createClass({
 	saveExcursion: function() {
 
 		var fileService = ServiceStore.getService('file');
-		var excursionService = ServiceStore.getService('excursion').getCurrent();
-		
-		var jsonBlob = excursionService.toJsonBlob();
 
-		fileService.write('/exc/' + utility.removeSpaces(excursionService.name) + '.exc', jsonBlob).then(function() {
+		var jsonBlob = this.props.excursion.toJsonBlob();
+
+		fileService.write('/exc/' + utility.removeSpaces(this.props.excursion.name) + '.exc', jsonBlob).then(function() {
 
 			alert('Save complete');
 
@@ -81,7 +64,7 @@ var ExcursionToolbar = React.createClass({
 		var gpxMenuIcon = (<FontIcon className="material-icons">swap_calls</FontIcon>);
     	
 		var gpxMenuItemsList = [];
-		this.state.excursionGpxList.map( (gpx, index) => {
+		this.props.excursion.getGpxList().map( (gpx, index) => {
 			gpxMenuItemsList.push(
 				<MenuItem 
 					key={'gpx_'+index}
@@ -113,9 +96,18 @@ var ExcursionToolbar = React.createClass({
 
 					<ToolbarGroup key={1} float="right">
 						
+						<h4 id="excursionTitle">{this.props.excursion.name}</h4>
+
+						<ToolbarSeparator />
+
+						<FontIcon className="material-icons">edit</FontIcon>
+						<FontIcon className="material-icons" onClick={this.saveExcursion}>save</FontIcon>
+						<FontIcon className="material-icons">rotate_left</FontIcon>
+
+						<ToolbarSeparator />
+
 						<FontIcon className="material-icons">center_focus_strong</FontIcon>
 						<FontIcon className="material-icons">gps_not_fixed</FontIcon>
-						<FontIcon className="material-icons" onClick={this.saveExcursion}>save</FontIcon>
 						
 						<ToolbarSeparator />
 

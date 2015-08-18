@@ -310,3 +310,13 @@ div.toolbarIconMenu:hover span {
   color: #000000 !important;
   cursor: pointer;
 }
+h4#excursionTitle {
+  display: inline-block;
+  position: relative;
+  float: left;
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: normal;
+  font-size: 18px;
+  margin: 0;
+  line-height: 56px;
+}
