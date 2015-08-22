@@ -47,13 +47,6 @@ var LeftNav = React.createClass({
 		};
 	},
 
-	componentWillReceiveProps: function(nextProps) {
-		
-		//when filesystem reference is passed in from parent props -> load available excursions
-		//if (nextProps && nextProps.fileSystem && nextProps.fileSystem.root) this.loadAvailableExcursions(nextProps.fileSystem);
-
-	},
-
 	handleServiceEvent: function(serviceEvent) {
 
 		//detect if filesystem update - if so reload excursions and gpx files

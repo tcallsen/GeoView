@@ -50,14 +50,14 @@ var GeoView = React.createClass({
 			service: FileService
 		});
 
-
+		/*
 		// FILE TRANSFER & other services passed in from parent app.js
 		this.props.services.forEach( service => {
 			Actions.registerService({
 				name: service.name,
 				service: service.service
 			});
-		});
+		}); */ 
 
 		// EXCURSION
 		Actions.registerService({

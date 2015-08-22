@@ -35,7 +35,7 @@ var Map = React.createClass({
 
     handleServiceEvent: function(serviceEvent) {
 
-        //detect if filesystem update - if so reload excursions and gpx files
+        //detect if excursion update - if so reload excursions and gpx files
         if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update') {
 
             //clear existing features
@@ -54,9 +54,11 @@ var Map = React.createClass({
             }));
 
             //center map on all enabled gpx features
-            var featureExtent = new ol.extent.createEmpty();
-            gpxFeatures.forEach( gpxFeature => ol.extent.extend(featureExtent, gpxFeature.getGeometry().getExtent()) );
-            if (featureExtent !== [0,0,0,0]) this.state.map.getView().setCenter( ol.extent.getCenter(featureExtent) );
+            if (gpxFeatures.length) {
+                var featureExtent = new ol.extent.createEmpty();
+                gpxFeatures.forEach( gpxFeature => ol.extent.extend(featureExtent, gpxFeature.getGeometry().getExtent()) );
+                if (featureExtent !== [0,0,0,0]) this.state.map.getView().setCenter( ol.extent.getCenter(featureExtent) );
+            }
 
         }
 
@@ -304,9 +306,6 @@ var Map = React.createClass({
     },
 
     saveCacheToFile: function() {
-
-        //make sure file system plugin available before proceeding
-        if (!this.props.fileSystem) return;
 
         console.log('saving file');
 

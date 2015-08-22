@@ -60,9 +60,41 @@ var ExcursionToolbar = React.createClass({
 
     render: function() {
 
+    	//build edit menu
+    	var editMenuIcon = (<FontIcon className="material-icons">more_vert</FontIcon>);
+    	//var leftMenuIcon = ;
+    	var editMenuItemsList = [
+    		<MenuItem 
+				key={'edit_0'}
+				primaryText="Edit"
+				leftIcon={<FontIcon className="material-icons">mode_edit</FontIcon>}
+				onClick={this.toggleGpxVisibility} />,
+			<MenuItem 
+				key={'edit_1'}
+				primaryText="Save"
+				leftIcon={<FontIcon className="material-icons">save</FontIcon>}
+				onClick={this.saveExcursion} />,
+			<MenuItem 
+				key={'edit_2'}
+				primaryText="Delete"
+				leftIcon={<FontIcon className="material-icons">delete</FontIcon>}
+				onClick={this.toggleGpxVisibility} />,
+				<MenuItem 
+				key={'edit_3'}
+				primaryText="Close"
+				leftIcon={<FontIcon className="material-icons">close</FontIcon>}
+				onClick={this.toggleGpxVisibility} />
+
+    	];
+
+    	var editMenu = (
+			<div>
+				{ editMenuItemsList }
+			</div>
+		);
+
     	//build gpx tracks menu
 		var gpxMenuIcon = (<FontIcon className="material-icons">swap_calls</FontIcon>);
-    	
 		var gpxMenuItemsList = [];
 		this.props.excursion.getGpxList().map( (gpx, index) => {
 			gpxMenuItemsList.push(
@@ -79,7 +111,7 @@ var ExcursionToolbar = React.createClass({
 				{ gpxMenuItemsList }
 				<MenuDivider />
 			</div>
-		)
+		);
 
     	var gpxTracksMenu = (
     		<div className="toolbarIconMenu">
@@ -95,22 +127,18 @@ var ExcursionToolbar = React.createClass({
 	            <Toolbar>
 
 					<ToolbarGroup key={1} float="right">
-						
+
 						<h4 id="excursionTitle">{this.props.excursion.name}</h4>
 
+						<div className="toolbarIconMenu" style={{float:"left"}}>
+				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left'>
+								{ editMenu }
+						    </IconMenu>
+					    </div>
+
 						<ToolbarSeparator />
 
-						<FontIcon className="material-icons">edit</FontIcon>
-						<FontIcon className="material-icons" onClick={this.saveExcursion}>save</FontIcon>
-						<FontIcon className="material-icons">rotate_left</FontIcon>
-
-						<ToolbarSeparator />
-
-						<FontIcon className="material-icons">center_focus_strong</FontIcon>
 						<FontIcon className="material-icons">gps_not_fixed</FontIcon>
-						
-						<ToolbarSeparator />
-
 						{ gpxTracksMenu }
 
 					</ToolbarGroup>
