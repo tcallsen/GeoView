@@ -2,6 +2,7 @@ var React = require("react");
 
 var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
+var ExcursionStore = require('../stores/ExcursionStore');
 var Actions     = require('../actions');
 
 var utility = require('../utility');
@@ -43,8 +44,8 @@ var AddGpxDialog = React.createClass({
                 fileService.readAsText(fileEntry.fullPath).then(function(fileContents) {
                   
                     //write new blob to excursion service
-                    var excursionService = ServiceStore.getService('excursion').getCurrent();
-                    excursionService.addGpxFile({ 
+                    var excursion = ExcursionStore.getCurrent();
+                    excursion.addGpxFile({ 
                         name: gpxName,
                         content: fileContents
                     });
@@ -69,8 +70,8 @@ var AddGpxDialog = React.createClass({
                 blobUtil.blobToBinaryString(gpxBlob).then(function(fileContents){
 
                     //create excursion
-                    var excursionService = ServiceStore.getService('excursion').getCurrent();
-                    excursionService.addGpxFile({ 
+                    var excursion = ExcursionStore.getCurrent();
+                    excursion.addGpxFile({ 
                         name: gpxName,
                         content: fileContents
                     });

@@ -9,9 +9,9 @@ var LeftNav   = require("./components/leftNav");
 var ExcursionToolbar  = require("./components/excursionToolbar");
 
 var ServiceStore = require('./stores/ServiceStore');
+var ExcursionStore = require('./stores/ExcursionStore');
 var Actions = require('./actions');
  
-var ExcursionService = require('./services/ExcursionService');
 var FileService = require('./services/FileService');
 
 var mui = require('material-ui'); 
@@ -23,7 +23,8 @@ var AppBar = mui.AppBar;
 var GeoView = React.createClass({
     
 	mixins: [Reflux.listenToMany({
-        handleServiceEvent: ServiceStore
+        handleServiceEvent: ServiceStore,
+        handleExcursionUpdate: ExcursionStore
     })],
 
 	getInitialState: function() {
@@ -59,12 +60,6 @@ var GeoView = React.createClass({
 			});
 		}); */ 
 
-		// EXCURSION
-		Actions.registerService({
-			name: 'excursion',
-			service: ExcursionService
-		});
-
 		/*
 		localForage.clear(function(err) {
 			console.log('localForage cleared..');
@@ -84,12 +79,12 @@ var GeoView = React.createClass({
 		};
 	},
 
-	handleServiceEvent: function(serviceEvent) {
+	handleExcursionUpdate: function(args) {
 
         //detect if excursion update - update GeoView display accordingly
-        if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && serviceEvent.service) {
-        	this.setState({ excursion: serviceEvent.service });
-        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && typeof serviceEvent.service === 'undefined') {
+        if (args.event && args.current) {
+        	this.setState({ excursion: args.current });
+        } else if (args.event === 'unmount' || !args.current) {
         	this.setState({ excursion: null });
         }
 

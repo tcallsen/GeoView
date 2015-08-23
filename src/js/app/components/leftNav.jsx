@@ -3,6 +3,7 @@
 var React = require("react");
 var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
+var ExcursionStore = require('../stores/ExcursionStore');
 var Actions = require('../actions');
 
 var NewDialog   = require("./newDialog");
@@ -94,15 +95,10 @@ var LeftNav = React.createClass({
 
 	loadExcursion: function(menuEntry) {
 
-		var excursionService = ServiceStore.getService('excursion');
-		var fileService = ServiceStore.getService('file');
-		
+		var fileService = ServiceStore.getService('file');		
 		fileService.read(menuEntry.fullPath).then(function(jsonBlob) {
-
-			excursionService.loadFromJsonBlob(jsonBlob);
-
+			ExcursionStore.loadFromJsonBlob(jsonBlob);
 		});
-
 
 	},
 

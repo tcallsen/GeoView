@@ -3,6 +3,7 @@
 var React = require("react");
 var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
+var ExcursionStore = require('../stores/ExcursionStore');
 var Actions = require('../actions');
 
 var utility = require('../utility');
@@ -58,6 +59,13 @@ var ExcursionToolbar = React.createClass({
 		
 	},
 
+	closeExcursion: function() {
+
+		//close current excursion
+        ExcursionStore.closeCurrent();
+
+	},
+
     render: function() {
 
     	//build edit menu
@@ -79,11 +87,11 @@ var ExcursionToolbar = React.createClass({
 				primaryText="Delete"
 				leftIcon={<FontIcon className="material-icons">delete</FontIcon>}
 				onClick={this.toggleGpxVisibility} />,
-				<MenuItem 
+			<MenuItem 
 				key={'edit_3'}
 				primaryText="Close"
 				leftIcon={<FontIcon className="material-icons">close</FontIcon>}
-				onClick={this.toggleGpxVisibility} />
+				onClick={this.closeExcursion} />
 
     	];
 
@@ -109,7 +117,7 @@ var ExcursionToolbar = React.createClass({
 		var gpxMenu = (
 			<div>
 				{ gpxMenuItemsList }
-				<MenuDivider />
+				{ gpxMenuItemsList.length ? <MenuDivider /> : null }
 			</div>
 		);
 

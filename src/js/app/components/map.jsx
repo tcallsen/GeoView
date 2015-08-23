@@ -2,6 +2,7 @@ var React = require("react");
 var Reflux = require("reflux");
 
 var ServiceStore = require('../stores/ServiceStore');
+var ExcursionStore = require('../stores/ExcursionStore');
 
 var ol = require('openlayers');
 var blobUtil = require('blob-util');
@@ -10,7 +11,8 @@ var localForage = require('localforage');
 var Map = React.createClass({
       
     mixins: [Reflux.listenToMany({
-        handleServiceEvent: ServiceStore
+        handleServiceEvent: ServiceStore,
+        handleExcursionUpdate: ExcursionStore
     })],
 
     getInitialState: function() {
@@ -25,7 +27,7 @@ var Map = React.createClass({
 
     },
 
-	  componentDidMount: function() {
+	componentDidMount: function() {
       	
         this.initializeMap();
 
@@ -33,21 +35,19 @@ var Map = React.createClass({
 
   	},
 
-    handleServiceEvent: function(serviceEvent) {
+    handleExcursionUpdate: function(args) {
 
-        //detect if excursion update - if so reload excursions and gpx files
-        if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update') {
-
+        //detect if excursion update - update GeoView display accordingly
+        if (args.event && args.current) {
+            
             //clear existing features
             this.state.excursionLayer.getSource().clear();
 
-            //draw new excursions if visible
-            var excursionService = serviceEvent.service;
-
-            console.log('excursionService in map', serviceEvent.service);
+            console.log('excursionService in map');
 
             //retrieve GPX features and draw on map
-            var gpxFeatures = excursionService.getGpxFeatures(null, true);
+            var excursion = ExcursionStore.getCurrent();
+            var gpxFeatures = excursion.getGpxFeatures(null, true);
 
             this.state.excursionLayer.setSource(new ol.source.Vector({
                 features: gpxFeatures
@@ -60,9 +60,37 @@ var Map = React.createClass({
                 if (featureExtent !== [0,0,0,0]) this.state.map.getView().setCenter( ol.extent.getCenter(featureExtent) );
             }
 
+        } else if (args.event === 'unmount' || !args.current) {
+            
+            //clear existing features
+            this.state.excursionLayer.getSource().clear();
+
+            this.state.excursionLayer.setSource(new ol.source.Vector({
+                features: []
+            }));
+
         }
 
     },
+
+    /* handleServiceEvent: function(serviceEvent) {
+
+        //detect if excursion update - if so reload excursions and gpx files
+        if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && serviceEvent.service) {
+
+            console.log('map handleServiceEvent', serviceEvent.service);
+
+            
+
+        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && !serviceEvent.service) {
+
+            console.log('clearing excursion from map');
+
+            
+
+        }
+
+    }, */
 
     initializeMap: function() {
 

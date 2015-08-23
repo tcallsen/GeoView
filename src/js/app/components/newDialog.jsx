@@ -2,6 +2,7 @@ var React = require("react");
 
 var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
+var ExcursionStore = require('../stores/ExcursionStore');
 var Actions     = require('../actions');
 
 var utility = require('../utility');
@@ -64,8 +65,7 @@ var NewDialog = React.createClass({
                 fileService.readAsText(fileEntry.fullPath).then(function(fileContents) {
                   
                     //create excursion
-                    var excursionService = ServiceStore.getService('excursion');
-                    excursionService.create({ 
+                    ExcursionStore.create({ 
                         name: excursionName,
                         gpx: {
                             name: gpxName,
@@ -94,9 +94,7 @@ var NewDialog = React.createClass({
                 blobUtil.blobToBinaryString(gpxBlob).then(function(fileTextContents) {
 
                     //create excursion
-                    var excursionService = ServiceStore.getService('excursion');
-
-                    excursionService.create({ 
+                    ExcursionStore.create({ 
                         name: excursionName,
                         gpx: {
                             name: gpxName,
@@ -113,8 +111,7 @@ var NewDialog = React.createClass({
             // CREATE EXSCURSION with no GPX
 
             //create excursion
-            var excursionService = ServiceStore.getService('excursion');
-            excursionService.create({
+            ExcursionStore.create({
                 name: excursionName,
             });
 
