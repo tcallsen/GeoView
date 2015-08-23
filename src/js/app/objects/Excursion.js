@@ -132,8 +132,6 @@ Excursion.prototype.toJsonBlob = function() {
 		gpx: this.gpx
 	}
 
-	console.log(JSON.stringify(excursionExport));
-
 	return blobUtil.createBlob( [ JSON.stringify(excursionExport) ] , {type: 'application/json'} );
 
 }

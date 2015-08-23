@@ -66,6 +66,16 @@ var ExcursionToolbar = React.createClass({
 
 	},
 
+	onItemTouchTap: function(event, item) {
+		console.log('onItemTouchTap', event, item);
+	},
+
+	onChange: function() {
+
+		alert('onChange');
+
+	},
+
     render: function() {
 
     	//build edit menu
@@ -123,7 +133,7 @@ var ExcursionToolbar = React.createClass({
 
     	var gpxTracksMenu = (
     		<div className="toolbarIconMenu">
-	    		<IconMenu iconButtonElement={gpxMenuIcon} openDirection='top-left'>
+	    		<IconMenu iconButtonElement={gpxMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
 					{ gpxMenu }
 					<MenuItem primaryText="Add GPX File.." onClick={this.toggleAddGpxFileDialog} />
 			    </IconMenu>
@@ -139,7 +149,7 @@ var ExcursionToolbar = React.createClass({
 						<h4 id="excursionTitle">{this.props.excursion.name}</h4>
 
 						<div className="toolbarIconMenu" style={{float:"left"}}>
-				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left'>
+				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
 								{ editMenu }
 						    </IconMenu>
 					    </div>
