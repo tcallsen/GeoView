@@ -21,7 +21,6 @@ var Map = React.createClass({
     		map: null,
     		gpsLayer: null,
             excursionLayer: null,
-    		watchID: null,
             readFromCache: false 
     	};
 
@@ -57,6 +56,7 @@ var Map = React.createClass({
             if (gpxFeatures.length) {
                 var featureExtent = new ol.extent.createEmpty();
                 gpxFeatures.forEach( gpxFeature => ol.extent.extend(featureExtent, gpxFeature.getGeometry().getExtent()) );
+                //if (featureExtent !== [0,0,0,0]) this.state.map.getView().fitExtent( featureExtent , this.state.map.getSize() );
                 if (featureExtent !== [0,0,0,0]) this.state.map.getView().setCenter( ol.extent.getCenter(featureExtent) );
             }
 
@@ -73,24 +73,40 @@ var Map = React.createClass({
 
     },
 
-    /* handleServiceEvent: function(serviceEvent) {
+    handleServiceEvent: function(serviceEvent) {
+
+        if (serviceEvent.name === 'location') console.log(serviceEvent);
 
         //detect if excursion update - if so reload excursions and gpx files
-        if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && serviceEvent.service) {
+        if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && serviceEvent.payload) {
 
-            console.log('map handleServiceEvent', serviceEvent.service);
+            console.log('location update');
 
+            this.state.gpsLayer.setSource(
+                new ol.source.Vector({
+                    features: [
+                        new ol.Feature({
+                            geometry: new ol.geom.Point(ol.proj.transform( [serviceEvent.payload.coords.longitude,serviceEvent.payload.coords.latitude] , 'EPSG:4326', 'EPSG:3857'))
+                        })
+                    ]
+                })
+            );
+
+            this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.coords.longitude,serviceEvent.payload.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
             
+        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && !serviceEvent.payload) {
 
-        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && !serviceEvent.service) {
+            console.log('unmount location event');
 
-            console.log('clearing excursion from map');
-
-            
+            this.state.gpsLayer.setSource(
+                new ol.source.Vector({
+                    features: []
+                })
+            );
 
         }
 
-    }, */
+    },
 
     initializeMap: function() {
 
@@ -127,33 +143,6 @@ var Map = React.createClass({
               })]
             }
         });
-
-        var watchID = navigator.geolocation.watchPosition(
-            function onSuccess(position) {
-                
-                this.state.gpsLayer.setSource(
-                    new ol.source.Vector({
-                        features: [
-                            new ol.Feature({
-                                geometry: new ol.geom.Point(ol.proj.transform( [position.coords.longitude,position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'))
-                            })
-                        ]
-                    })
-                );
-
-                this.state.map.getView().setCenter(ol.proj.transform( [position.coords.longitude,position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
-
-            }.bind(this),
-
-            // onError Callback receives a PositionError object
-            //
-            function onError(error) {
-                console.log('error dawg');
-            }.bind(this)
-        );
-
-
-
  
         var terrainLayerSource = new ol.source.Stamen({
                 layer: 'terrain',
@@ -293,8 +282,7 @@ var Map = React.createClass({
         gpsLayer: gpsLayer,
         excursionLayer: excursionLayer,
         terrainLayer: terrainLayer,
-        terrainLayerSource: terrainLayerSource,
-        watchID: watchID
+        terrainLayerSource: terrainLayerSource
       });
 
     },

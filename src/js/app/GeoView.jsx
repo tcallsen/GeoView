@@ -13,6 +13,7 @@ var ExcursionStore = require('./stores/ExcursionStore');
 var Actions = require('./actions');
  
 var FileService = require('./services/FileService');
+var LocationService = require('./services/LocationService');
 
 var mui = require('material-ui'); 
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -50,6 +51,13 @@ var GeoView = React.createClass({
 			name: 'file',
 			service: FileService
 		});
+
+		// LOCATION SERVICE
+		Actions.registerService({
+			name: 'location',
+			service: new LocationService()
+		});
+
 
 		/*
 		// FILE TRANSFER & other services passed in from parent app.js
