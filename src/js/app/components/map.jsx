@@ -75,10 +75,11 @@ var Map = React.createClass({
 
     handleServiceEvent: function(serviceEvent) {
 
-        if (serviceEvent.name === 'location') console.log(serviceEvent);
-
         //detect if excursion update - if so reload excursions and gpx files
-        if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && serviceEvent.payload) {
+        if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && serviceEvent.payload.enabled) {
+
+            //return if position not supplied
+            if (!serviceEvent.payload.position) return;
 
             console.log('location update');
 
@@ -86,15 +87,15 @@ var Map = React.createClass({
                 new ol.source.Vector({
                     features: [
                         new ol.Feature({
-                            geometry: new ol.geom.Point(ol.proj.transform( [serviceEvent.payload.coords.longitude,serviceEvent.payload.coords.latitude] , 'EPSG:4326', 'EPSG:3857'))
+                            geometry: new ol.geom.Point(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'))
                         })
                     ]
                 })
             );
 
-            this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.coords.longitude,serviceEvent.payload.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
+            this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
             
-        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && !serviceEvent.payload) {
+        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && !serviceEvent.payload.enabled) {
 
             console.log('unmount location event');
 

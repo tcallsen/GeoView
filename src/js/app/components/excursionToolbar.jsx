@@ -22,13 +22,15 @@ var MenuDivider = require('material-ui/lib/menus/menu-divider');
 
 var ExcursionToolbar = React.createClass({
 
-	/* mixins: [Reflux.listenToMany({
+	mixins: [Reflux.listenToMany({
         handleServiceEvent: ServiceStore
-    })], */
+    })],
     
 	getInitialState: function() {
 		
-		return { };
+		return { 
+			gpsTrackingEnabled: ServiceStore.getService('location').enabled
+		};
 
 	},
 
@@ -38,6 +40,10 @@ var ExcursionToolbar = React.createClass({
 
 	toggleAddGpxFileDialog: function() {
 		this.refs.addGpxDialog.refs.dialog.show();
+	},
+
+	toggleLocation: function() {
+		ServiceStore.getService('location').toggle();
 	},
 
 	saveExcursion: function() {
@@ -75,6 +81,16 @@ var ExcursionToolbar = React.createClass({
 		alert('onChange');
 
 	},
+
+	handleServiceEvent: function(serviceEvent) {
+
+		if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && this.state.gpsTrackingEnabled != serviceEvent.payload.enabled) {
+			this.setState({
+				gpsTrackingEnabled: serviceEvent.payload.enabled
+			});
+		}
+
+    },
 
     render: function() {
 
@@ -156,7 +172,8 @@ var ExcursionToolbar = React.createClass({
 
 						<ToolbarSeparator />
 
-						<FontIcon className="material-icons">gps_not_fixed</FontIcon>
+						<FontIcon className="material-icons" onClick={this.toggleLocation}>{ (this.state.gpsTrackingEnabled) ? 'gps_fixed' : 'gps_not_fixed' }</FontIcon>
+						
 						{ gpxTracksMenu }
 
 					</ToolbarGroup>

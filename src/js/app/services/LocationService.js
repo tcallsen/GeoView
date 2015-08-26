@@ -9,7 +9,7 @@ var LocationService = function() {
 
 	this.enabled = null;
 	this.position = null;
-	this.track = [];
+	//this.track = [];
 	this.watchId = null;
 
 	this.toggle(true);
@@ -17,23 +17,26 @@ var LocationService = function() {
 };
 
 LocationService.prototype.toggle = function(forceMode) {
-	
+
 	//toggle this.enabled flag
 	if (typeof forceMode != 'undefined') this.enabled = forceMode;
-	else this.enabled = !this.endabled;
+	else this.enabled = !this.enabled;
 
 	//set navigator position watcher if enabled
 	if (this.enabled) this.watchId = navigator.geolocation.watchPosition(this.triggerLocationUpdate.bind(this), this.locationError.bind(this));
 	else {
 		
 		//clear navigator geolocation watch
-		navigator.geolocation.clearWatch(watchId);
+		navigator.geolocation.clearWatch(this.watchId);
 
 		//transmit "disabled" message through application
 		Actions.triggerServiceEvent({
 	        name: 'location',
 	        event: 'update',
-	        payload: null
+	        payload: {
+	        	enabled: false,
+	        	position: null
+	        }
 	    });
 
     }
@@ -46,12 +49,15 @@ LocationService.prototype.triggerLocationUpdate = function(position) {
 	
 	//save position to service
 	this.position = position;
-	this.track.push(position);
+	//this.track.push(position);
 
 	Actions.triggerServiceEvent({
         name: 'location',
-        event: (this.track.length == 1) ? 'mount' : 'update',
-        payload: position
+        event: 'update',
+        payload: {
+        	enabled: false,
+        	position: position
+        }
     });
 
 };
@@ -60,7 +66,16 @@ LocationService.prototype.locationError = function(error) {
 
 	console.log('locationError');
 
-	console.log('error retrieving position', error);
+	//transmit "disabled" message through application
+	Actions.triggerServiceEvent({
+        name: 'location',
+        event: 'update',
+        payload: {
+        	enabled: true,
+        	position: null
+        }
+    });	
+
 };
 
 module.exports = LocationService;
