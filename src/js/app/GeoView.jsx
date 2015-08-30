@@ -7,6 +7,7 @@ var Reflux = require("reflux");
 var Map     = require("./components/Map");
 var LeftNav   = require("./components/leftNav");
 var ExcursionToolbar  = require("./components/excursionToolbar");
+var ElevationSnackbar  = require("./components/elevationSnackbar");
 
 var ServiceStore = require('./stores/ServiceStore');
 var ExcursionStore = require('./stores/ExcursionStore');
@@ -20,6 +21,7 @@ var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 var ThemeManager = new mui.Styles.ThemeManager();
 var AppBar = mui.AppBar;
+var Snackbar = mui.Snackbar;
 
 var GeoView = React.createClass({
     
@@ -58,7 +60,6 @@ var GeoView = React.createClass({
 			service: new LocationService()
 		});
 
-
 		/*
 		// FILE TRANSFER & other services passed in from parent app.js
 		this.props.services.forEach( service => {
@@ -72,7 +73,6 @@ var GeoView = React.createClass({
 		localForage.clear(function(err) {
 			console.log('localForage cleared..');
 		}); */
-
 		
 	},
 
@@ -107,6 +107,11 @@ var GeoView = React.createClass({
 		this.refs.leftNav.toggleLeftNav();
 	},
 
+	//forward event handler from excursionToolbar down into ElevationSnackbar component
+	toggleElevationSnackbar: function() {
+		this.refs.elevationSnackbar.toggleDisplay();
+	},
+
     render: function() {
 
     	var style = {
@@ -117,7 +122,9 @@ var GeoView = React.createClass({
     	};
 
     	var excursionToolbar = (this.state.excursion) ?
-    		( <ExcursionToolbar excursion={this.state.excursion} /> )
+    		( <ExcursionToolbar 
+    			excursion={this.state.excursion}
+    			toggleElevationSnackbar={this.toggleElevationSnackbar} /> )
     		: null ;
 
         return (
@@ -131,6 +138,7 @@ var GeoView = React.createClass({
 			  	<div id='mapContainer' style={ style.mapContainer }>
 			  		<Map /> 
 		  		</div>
+		  		<ElevationSnackbar ref="elevationSnackbar" />
 		  		{ excursionToolbar }
             </div>
         );

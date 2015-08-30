@@ -16,6 +16,13 @@ var LocationService = function() {
 
 };
 
+LocationService.prototype.getPosition = function() {
+
+	if (this.position) return this.position;
+	else return false;
+
+};
+
 LocationService.prototype.toggle = function(forceMode) {
 
 	//toggle this.enabled flag
@@ -55,7 +62,7 @@ LocationService.prototype.triggerLocationUpdate = function(position) {
         name: 'location',
         event: 'update',
         payload: {
-        	enabled: false,
+        	enabled: true,
         	position: position
         }
     });
@@ -71,7 +78,7 @@ LocationService.prototype.locationError = function(error) {
         name: 'location',
         event: 'update',
         payload: {
-        	enabled: true,
+        	enabled: false,
         	position: null
         }
     });	

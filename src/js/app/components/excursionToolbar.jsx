@@ -156,6 +156,8 @@ var ExcursionToolbar = React.createClass({
 		    </div>
 	    );
 
+	    //{ gpxTracksMenu }
+
         return (
             <div>
 	            <Toolbar>
@@ -174,7 +176,7 @@ var ExcursionToolbar = React.createClass({
 
 						<FontIcon className="material-icons" onClick={this.toggleLocation}>{ (this.state.gpsTrackingEnabled) ? 'gps_fixed' : 'gps_not_fixed' }</FontIcon>
 						
-						{ gpxTracksMenu }
+						<FontIcon className="material-icons" onClick={this.props.toggleElevationSnackbar}>{ 'trending_up' }</FontIcon>
 
 					</ToolbarGroup>
 

@@ -46,6 +46,7 @@ Thumbs.db
 # Cordova specific #
 ####################
 /platforms/browser/
+/platforms/ios/
 /platforms/ios/build/
 /platforms/ios/cordova/
 /platforms/ios/CordovaLib/
