@@ -95,9 +95,7 @@ var Map = React.createClass({
 
             this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
             
-        } else if (serviceEvent.name === 'excursion' && serviceEvent.event === 'update' && !serviceEvent.payload.enabled) {
-
-            console.log('unmount location event');
+        } else if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && !serviceEvent.payload.enabled) {
 
             this.state.gpsLayer.setSource(
                 new ol.source.Vector({
