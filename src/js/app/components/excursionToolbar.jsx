@@ -94,6 +94,12 @@ var ExcursionToolbar = React.createClass({
 
     render: function() {
 
+    	var style = {
+    		excursionTitle: {
+    			width: (this.refs.titleSizeAnchor) ? this.refs.titleSizeAnchor.getDOMNode().getBoundingClientRect().left - 40 : 0
+    		}
+    	};
+
     	//build edit menu
     	var editMenuIcon = (<FontIcon className="material-icons">more_vert</FontIcon>);
     	//var leftMenuIcon = ;
@@ -166,9 +172,9 @@ var ExcursionToolbar = React.createClass({
 
 					<ToolbarGroup key={1} float="right">
 
-						<h4 id="excursionTitle">{"New Excursion" /*this.props.excursion.name*/}</h4>
+						<h4 id="excursionTitle" style={ style.excursionTitle }>{ (this.props.excursion) ? this.props.excursion.name : "New Excursion" }</h4>
 
-						<div className="toolbarIconMenu" style={{float:"left"}}>
+						<div className="toolbarIconMenu" ref="titleSizeAnchor" style={{float:"left"}}>
 				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
 								{ editMenu }
 						    </IconMenu>
