@@ -116,16 +116,10 @@ var GeoView = React.createClass({
 
     	var style = {
       		mapContainer: {
-	      		height: (this.state.excursion) ? 'calc(100% - 120px)' : 'calc(100% - 64px)' ,
+	      		height: 'calc(100% - 120px)', //(this.state.excursion) ? 'calc(100% - 120px)' : 'calc(100% - 64px)' ,
 	      		width: '100%'
 	    	}
     	};
-
-    	var excursionToolbar = (this.state.excursion) ?
-    		( <ExcursionToolbar 
-    			excursion={this.state.excursion}
-    			toggleElevationSnackbar={this.toggleElevationSnackbar} /> )
-    		: null ;
 
         return (
             <div id="GeoView"> 
@@ -139,7 +133,11 @@ var GeoView = React.createClass({
 			  		<Map /> 
 		  		</div>
 		  		<ElevationSnackbar ref="elevationSnackbar" />
-		  		{ excursionToolbar }
+		  		
+		  		<ExcursionToolbar 
+	    			excursion={this.state.excursion}
+	    			toggleElevationSnackbar={this.toggleElevationSnackbar} />
+
             </div>
         );
     }

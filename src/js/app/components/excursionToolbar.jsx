@@ -29,7 +29,7 @@ var ExcursionToolbar = React.createClass({
 	getInitialState: function() {
 		
 		return { 
-			gpsTrackingEnabled: ServiceStore.getService('location').enabled
+			gpsTrackingEnabled: false,
 		};
 
 	},
@@ -127,18 +127,20 @@ var ExcursionToolbar = React.createClass({
 			</div>
 		);
 
-    	//build gpx tracks menu
+    	//build gpx tracks menu - add excursion gpx files if excursion set
 		var gpxMenuIcon = (<FontIcon className="material-icons">swap_calls</FontIcon>);
 		var gpxMenuItemsList = [];
-		this.props.excursion.getGpxList().map( (gpx, index) => {
-			gpxMenuItemsList.push(
-				<MenuItem 
-					key={'gpx_'+index}
-					primaryText={gpx.name} 
-					checked={gpx.visible}
-					onClick={this.toggleGpxVisibility.bind(this, gpx.guid)} />
-			);
-		});
+		if (this.props.excursion && this.props.excursion.getGpxList().length) {
+			this.props.excursion.getGpxList().map( (gpx, index) => {
+				gpxMenuItemsList.push(
+					<MenuItem 
+						key={'gpx_'+index}
+						primaryText={gpx.name} 
+						checked={gpx.visible}
+						onClick={this.toggleGpxVisibility.bind(this, gpx.guid)} />
+				);
+			});
+		}
 
 		var gpxMenu = (
 			<div>
@@ -164,7 +166,7 @@ var ExcursionToolbar = React.createClass({
 
 					<ToolbarGroup key={1} float="right">
 
-						<h4 id="excursionTitle">{"Sample" /*this.props.excursion.name*/}</h4>
+						<h4 id="excursionTitle">{"New Excursion" /*this.props.excursion.name*/}</h4>
 
 						<div className="toolbarIconMenu" style={{float:"left"}}>
 				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
