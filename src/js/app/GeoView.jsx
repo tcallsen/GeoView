@@ -21,7 +21,7 @@ var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 var ThemeManager = new mui.Styles.ThemeManager();
 var AppBar = mui.AppBar;
-var Snackbar = mui.Snackbar;
+var Snackbar = mui.Snackbar; 
 
 var GeoView = React.createClass({
     

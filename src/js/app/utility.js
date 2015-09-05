@@ -36,6 +36,10 @@ utility.endsWith = function(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
+utility.toFeet = function(meters) {
+    return Math.round(3.2808 * meters);
+}
+
 module.exports = utility;
 
 /* utility.promiseWhile() example

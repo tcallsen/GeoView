@@ -164,7 +164,7 @@ var ExcursionToolbar = React.createClass({
 
 					<ToolbarGroup key={1} float="right">
 
-						<h4 id="excursionTitle">{this.props.excursion.name}</h4>
+						<h4 id="excursionTitle">{"Sample" /*this.props.excursion.name*/}</h4>
 
 						<div className="toolbarIconMenu" style={{float:"left"}}>
 				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>

@@ -48,12 +48,18 @@ var ElevationSnackbar = React.createClass({
 
             //return if position not supplied
             if (!serviceEvent.payload.position || !serviceEvent.payload.position.coords) return;
-            
+
             this.setState({
                 elevation: serviceEvent.payload.position.coords.altitude
             });
 
         }
+
+    },
+
+    handleActionTouchTap:function(event) {
+
+        alert('dialog will be displayed');
 
     },
 
@@ -65,15 +71,20 @@ var ElevationSnackbar = React.createClass({
                 bottom: 68,
                 right: 10,
                 marginLeft: 'auto',
-                left: 'auto' 
+                left: 'auto',
+                minWidth: 'auto',
+                maxWidth: 'auto',
+                width: 'calc(100% - 68px)',
+                overflow: 'hidden'
             }
         }
  
         return (
             <Snackbar
                 ref="snackbar"
-                message={"Elevation: " + this.state.elevation} 
-                action="undo" 
+                message={ "Elevation: " + utility.toFeet(this.state.elevation) + "ft" } 
+                action="more"
+                onActionTouchTap={this.handleActionTouchTap}
                 style={style.snackbar} />
         );
 
