@@ -75,33 +75,52 @@ var Map = React.createClass({
 
     handleServiceEvent: function(serviceEvent) {
 
-        //detect if excursion update - if so reload excursions and gpx files
-        if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && serviceEvent.payload.enabled) {
+        // LOCATION
 
-            //return if position not supplied
-            if (!serviceEvent.payload.position) return;
+        if (serviceEvent.name === 'location') {
 
-            console.log('location update');
+            //detect if excursion update - if so reload excursions and gpx files
+            if (serviceEvent.event === 'update' && serviceEvent.payload.enabled) {
 
-            this.state.gpsLayer.setSource(
-                new ol.source.Vector({
-                    features: [
-                        new ol.Feature({
-                            geometry: new ol.geom.Point(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'))
-                        })
-                    ]
-                })
-            );
+                //return if position not supplied
+                if (!serviceEvent.payload.position) return;
 
-            this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
-            
-        } else if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && !serviceEvent.payload.enabled) {
+                console.log('location update');
 
-            this.state.gpsLayer.setSource(
-                new ol.source.Vector({
-                    features: []
-                })
-            );
+                this.state.gpsLayer.setSource(
+                    new ol.source.Vector({
+                        features: [
+                            new ol.Feature({
+                                geometry: new ol.geom.Point(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'))
+                            })
+                        ]
+                    })
+                );
+
+                this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
+                
+            } else if (serviceEvent.event === 'update' && !serviceEvent.payload.enabled) {
+
+                this.state.gpsLayer.setSource(
+                    new ol.source.Vector({
+                        features: []
+                    })
+                );
+
+            }
+
+        // WINDOW
+
+        } else if (serviceEvent.name === 'window') {
+
+            console.log(serviceEvent);
+
+            if (serviceEvent.payload.size && serviceEvent.payload.size.length == 2) {
+
+                console.log('map resize');
+                this.state.map.updateSize();
+
+            } 
 
         }
 

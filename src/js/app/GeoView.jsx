@@ -15,6 +15,7 @@ var Actions = require('./actions');
  
 var FileService = require('./services/FileService');
 var LocationService = require('./services/LocationService');
+var WindowService = require('./services/WindowService');
 
 var mui = require('material-ui'); 
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -60,6 +61,12 @@ var GeoView = React.createClass({
 			service: new LocationService()
 		});
 
+		// WINDOW SERVICE
+		Actions.registerService({
+			name: 'window',
+			service: new WindowService()
+		});
+
 		/*
 		// FILE TRANSFER & other services passed in from parent app.js
 		this.props.services.forEach( service => {
@@ -98,6 +105,18 @@ var GeoView = React.createClass({
 
     },
 
+    handleServiceEvent: function(serviceEvent) {
+
+        // WINDOW
+		if (serviceEvent.name === 'window' && serviceEvent.payload.size && serviceEvent.payload.size.length == 2) {
+            console.log('geoView resize');
+            this.setState({
+            	containerSize: serviceEvent.payload.size
+            });
+        }
+
+    },
+
 	errorAccessingFileSystem: function(evt) {
 		console.log(evt);
 		//alert(evt.target.error.code);
@@ -115,6 +134,9 @@ var GeoView = React.createClass({
     render: function() {
 
     	var style = {
+      		geoView: {
+      			height: (this.state.containerSize) ? this.state.containerSize[1] : '100%'
+      		},
       		mapContainer: {
 	      		height: 'calc(100% - 120px)', //(this.state.excursion) ? 'calc(100% - 120px)' : 'calc(100% - 64px)' ,
 	      		width: '100%'
@@ -122,7 +144,7 @@ var GeoView = React.createClass({
     	};
 
         return (
-            <div id="GeoView"> 
+            <div id="GeoView" style={ style.geoView }> 
               	<LeftNav
               		ref="leftNav" />
               	<AppBar
