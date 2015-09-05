@@ -87,6 +87,9 @@ var Map = React.createClass({
 
                 console.log('location update');
 
+                //only center map ONCE when location is enabled
+                if (!this.state.gpsLayer.getSource().getFeatures().length) this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
+
                 this.state.gpsLayer.setSource(
                     new ol.source.Vector({
                         features: [
@@ -96,8 +99,6 @@ var Map = React.createClass({
                         ]
                     })
                 );
-
-                this.state.map.getView().setCenter(ol.proj.transform( [serviceEvent.payload.position.coords.longitude,serviceEvent.payload.position.coords.latitude] , 'EPSG:4326', 'EPSG:3857'));
                 
             } else if (serviceEvent.event === 'update' && !serviceEvent.payload.enabled) {
 
