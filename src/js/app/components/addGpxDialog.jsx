@@ -9,7 +9,7 @@ var utility = require('../utility');
 var blobUtil = require('blob-util');
 
 var mui = require('material-ui'); 
-var Dialog = mui.Dialog;
+var Dialog = require('../vendor/material-ui/dialog');
 var FlatButton = mui.FlatButton;
 var TextField = mui.TextField; 
 

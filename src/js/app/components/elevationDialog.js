@@ -9,7 +9,7 @@ var Highcharts = require('highcharts-commonjs');
 var utility = require('../utility');
 
 var mui = require('material-ui'); 
-var Dialog = mui.Dialog;
+var Dialog = require('../vendor/material-ui/dialog');
 var FlatButton = mui.FlatButton;
 
 var ElevationDialog = React.createClass({
@@ -27,7 +27,7 @@ var ElevationDialog = React.createClass({
         return {
             chart: {
                 zoomType: null,
-                spacing: [10,0,0,0],
+                spacing: [0,0,0,0],
                 animation: false,
                 reflow: false
             },
@@ -57,11 +57,13 @@ var ElevationDialog = React.createClass({
                     formatter: function() {
                         return utility.toFeet(this.value);
                     },
+                    distance: 5,
                     align: 'left',
                     x: 0,
                     y: -2
                 },
-                minPadding: 0
+                minPadding: 0,
+                tickPixelInterval: 40,
             },
             legend: {
                 enabled: false
@@ -197,6 +199,7 @@ var ElevationDialog = React.createClass({
             <div>
                 <Dialog 
                     ref="dialog" 
+                    elevation="true" 
                     title="Elevation Profile" 
                     onShow={this.onDialogShow} 
                     actions={customActions} 
