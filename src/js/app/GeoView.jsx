@@ -99,6 +99,7 @@ var GeoView = React.createClass({
         //detect if excursion update - update GeoView display accordingly
         if (args.event && args.current) {
         	this.setState({ excursion: args.current });
+        	console.log(args.current);
         } else if (args.event === 'unmount' || !args.current) {
         	this.setState({ excursion: null });
         }
@@ -154,7 +155,8 @@ var GeoView = React.createClass({
 			  	<div id='mapContainer' style={ style.mapContainer }>
 			  		<Map /> 
 		  		</div>
-		  		<ElevationSnackbar ref="elevationSnackbar" />
+		  		
+		  		<ElevationSnackbar ref="elevationSnackbar" excursion={this.state.excursion} />
 		  		
 		  		<ExcursionToolbar 
 	    			excursion={this.state.excursion}

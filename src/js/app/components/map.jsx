@@ -7,6 +7,7 @@ var ExcursionStore = require('../stores/ExcursionStore');
 var ol = require('openlayers');
 var blobUtil = require('blob-util');
 var localForage = require('localforage');
+var utility = require('../utility');
 
 var Map = React.createClass({
       

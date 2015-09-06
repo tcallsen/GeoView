@@ -5,6 +5,8 @@ var ServiceStore = require('../stores/ServiceStore');
 var ExcursionStore = require('../stores/ExcursionStore');
 var Actions     = require('../actions');
 
+var ElevationDialog = require('./elevationDialog');
+
 var utility = require('../utility');
 
 var mui = require('material-ui'); 
@@ -57,10 +59,8 @@ var ElevationSnackbar = React.createClass({
 
     },
 
-    handleActionTouchTap:function(event) {
-
-        alert('dialog will be displayed');
-
+    toggleElevationDialog: function() {
+        this.refs.elevationDialog.refs.dialog.show();
     },
 
     render: function() {
@@ -80,12 +80,17 @@ var ElevationSnackbar = React.createClass({
         }
  
         return (
-            <Snackbar
-                ref="snackbar"
-                message={ "Elevation: " + utility.toFeet(this.state.elevation) + "ft" } 
-                action="more"
-                onActionTouchTap={this.handleActionTouchTap}
-                style={style.snackbar} />
+            <div>
+                <Snackbar
+                    ref="snackbar"
+                    message={ "Elevation: " + utility.toFeet(this.state.elevation) + "ft" } 
+                    action="more"
+                    onActionTouchTap={this.toggleElevationDialog}
+                    style={style.snackbar} />
+                <ElevationDialog 
+                    excursion={this.props.excursion}
+                    ref="elevationDialog" />
+            </div>
         );
 
     }

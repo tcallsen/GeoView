@@ -12,6 +12,7 @@
     "bluebird": "^2.9.34",
     "cordova": "~3.4.1-0.1.0",
     "cordova-ios": "^3.5.0",
+    "highcharts-commonjs": "^4.1.7-1",
     "localforage": "^1.2.4",
     "material-design-icons": "^2.0.0",
     "material-ui": "0.11.0",
