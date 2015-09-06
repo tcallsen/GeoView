@@ -18,7 +18,7 @@ var LocationService = function() {
 
 LocationService.prototype.getPosition = function() {
 
-	if (this.position) return this.position;
+	if (this.enabled && this.position) return this.position;
 	else return false;
 
 };
@@ -52,8 +52,6 @@ LocationService.prototype.toggle = function(forceMode) {
 
 LocationService.prototype.triggerLocationUpdate = function(position) {
 
-	console.log('triggerLocationUpdate');
-	
 	//save position to service
 	this.position = position;
 	//this.track.push(position);

@@ -35,7 +35,7 @@ var Excursion = function(store, args) {
 		//make sure elevationa array exists
 		if (!gpxEntry.elevation || !Array.isArray(gpxEntry.elevation)) return;
 		//loop through each element in array and instantiate Date
-		gpxEntry.elevation.forEach( (entry,index) => gpxEntry.elevation[index][0] = new Date(gpxEntry.elevation[index][0]) );
+		gpxEntry.elevation.forEach( (entry,index) => gpxEntry.elevation[index][0] = index /*new Date(gpxEntry.elevation[index][0])*/ );
 	});
 
 	return this;
@@ -116,8 +116,8 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
             if (!this.gpx[gpxKey].elevation) {
             	console.log('parsing elevation array for gpx feature');
             	var timeElevationArray = [];
-	            gpxFeature[0].getGeometry().getCoordinates()[0].forEach( coordPair => {
-	            	timeElevationArray.push([ new Date(coordPair[3] * 1000) , coordPair[2] ]);
+	            gpxFeature[0].getGeometry().getCoordinates()[0].forEach( (coordPair, index) => {
+	            	timeElevationArray.push([ index /*new Date(coordPair[3] * 1000)*/ , coordPair[2] ]);
 	            });
 	            this.gpx[gpxKey].elevation = timeElevationArray;
             }
@@ -132,6 +132,31 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 		return gpxFeatures;
 
 	}
+
+}
+
+Excursion.prototype.getGpxProgressIndex = function(gpxKey, position) {
+
+	console.log('Excursion.prototype.getGpxProgressIndex');
+
+	//assemble current location coord (needle)
+	var currentLocationCoord = [ position.coords.longitude , position.coords.latitude ];
+	
+	//parse geo feature (haystack)
+	var gpxFeatures = new ol.format.GPX().readFeatures(this.gpx[gpxKey].content);
+	var gpxGeometry = gpxFeatures[0].getGeometry();
+
+	//search geo feature for closest point
+	var closestPoint = gpxGeometry.getClosestPoint(currentLocationCoord);
+
+	//determine index of closest point in gpxGeometry coordinates array
+	var gpxProgressIndex = 0;
+	gpxGeometry.getCoordinates()[0].forEach( (coord, index) => {
+		if (gpxProgressIndex) return;
+		if (closestPoint[0] === coord[0] && closestPoint[1] === coord[1]) gpxProgressIndex = index;
+	});
+
+	return gpxProgressIndex;
 
 }
 

@@ -43,9 +43,9 @@ var ElevationDialog = React.createClass({
                 }
             },
             xAxis: {
-                type: 'datetime',
+                type: 'linear',
                 labels: {
-                    //enabled: false
+                    enabled: false
                 },
             },
             yAxis: {
@@ -149,14 +149,17 @@ var ElevationDialog = React.createClass({
         if (this.props.excursion && this.props.excursion.gpx && Object.keys(this.props.excursion.gpx).length && this.refs.highchartRenderContainer) {
             
             //get elevation property of first gpx file from excursion in this.props.excursion
-            var gpxElevationEntry = this.props.excursion.gpx[Object.keys(this.props.excursion.gpx)[0]].elevation;
+            var firstGpxKey = Object.keys(this.props.excursion.gpx)[0];
+            var gpxElevationEntry = this.props.excursion.gpx[firstGpxKey].elevation;
 
             //if location active - determine closest point
-
+            var position = ServiceStore.getService('location').getPosition();
+            var gpxProgressIndex = 0;
+            if (position) gpxProgressIndex = this.props.excursion.getGpxProgressIndex(firstGpxKey, position);
 
             Highcharts.createChart(
                 this.refs.highchartRenderContainer.getDOMNode(),
-                this.getCharConfig(gpxElevationEntry, 1000),
+                this.getCharConfig(gpxElevationEntry, gpxProgressIndex),
                 function() {
                     console.log('Chart initialized');
                 }
