@@ -22,7 +22,7 @@ var ElevationDialog = React.createClass({
 
   	},
 
-    getCharConfig: function(dataArray) {
+    getCharConfig: function(dataArray, progressIndex) {
 
         return {
             chart: {
@@ -43,9 +43,9 @@ var ElevationDialog = React.createClass({
                 }
             },
             xAxis: {
-                type: 'linear',
+                type: 'datetime',
                 labels: {
-                    enabled: false
+                    //enabled: false
                 },
             },
             yAxis: {
@@ -95,17 +95,34 @@ var ElevationDialog = React.createClass({
             credits: {
                 enabled: false
             },
-            series: [{
-                type: 'area',
-                data: dataArray,
-                animation: false,
-                enableMouseTracking: false
-            }]/*,
-            {
-                type: 'area',
-                data: trackElevationProgress
-            }
-            ]*/
+            series: 
+                (progressIndex) ?
+                
+                //progress index supplied
+                [{
+                    type: 'area',
+                    data: dataArray,
+                    animation: false,
+                    enableMouseTracking: false,
+                    color: '#2583E0'
+                },
+                {
+                    type: 'area',
+                    data: dataArray.slice(progressIndex),
+                    animation: false,
+                    enableMouseTracking: false,
+                    color: '#9DC8F1',
+                    fillOpacity: 1
+                }] :
+                
+                //no progress index supplied
+                [{
+                    type: 'area',
+                    data: dataArray,
+                    animation: false,
+                    enableMouseTracking: false
+                }]
+
         };
 
     },
@@ -134,9 +151,12 @@ var ElevationDialog = React.createClass({
             //get elevation property of first gpx file from excursion in this.props.excursion
             var gpxElevationEntry = this.props.excursion.gpx[Object.keys(this.props.excursion.gpx)[0]].elevation;
 
+            //if location active - determine closest point
+
+
             Highcharts.createChart(
                 this.refs.highchartRenderContainer.getDOMNode(),
-                this.getCharConfig(gpxElevationEntry),
+                this.getCharConfig(gpxElevationEntry, 1000),
                 function() {
                     console.log('Chart initialized');
                 }

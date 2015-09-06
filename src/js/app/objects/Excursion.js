@@ -29,14 +29,14 @@ var Excursion = function(store, args) {
 
 	} else this.gpx = args.gpx;
 
-	/* //loop through elevation arrays and instantiate dates for each entry (used by Highcharts)
+	//loop through elevation arrays and instantiate dates for each entry (used by Highcharts)
 	Object.keys(this.gpx).forEach( gpxEntryKey => {
 		var gpxEntry = this.gpx[gpxEntryKey];
 		//make sure elevationa array exists
 		if (!gpxEntry.elevation || !Array.isArray(gpxEntry.elevation)) return;
 		//loop through each element in array and instantiate Date
 		gpxEntry.elevation.forEach( (entry,index) => gpxEntry.elevation[index][0] = new Date(gpxEntry.elevation[index][0]) );
-	}); */
+	});
 
 	return this;
 
