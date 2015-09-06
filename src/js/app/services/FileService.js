@@ -7,6 +7,35 @@ var utility = require('../utility');
 
 var FileService = {
 
+	read: function(path) {
+
+		var fileSystem = ServiceStore.getService('fileSystem');
+        if (fileSystem) {
+
+        	return new Promise(function (fulfill, reject) {
+
+        		//define reject path - fileSystem error
+        		var fileSystemFail = function(event) { 
+			        reject(event);
+			    };
+
+			    //define fulfill path - write operation
+	            fileSystem.root.getFile(path, null, function(fileEntry) {
+	            	fileEntry.file(function(file) {
+	            		var reader = new FileReader();
+	            		reader.onloadend = function(evt) {
+				            fulfill(blobUtil.createBlob([evt.target.result], {type: 'text/plain'}));
+				        };
+				        reader.readAsText(file);
+	        		}, fileSystemFail);
+	            }, fileSystemFail) 
+
+            });
+
+    	}
+
+	},
+
 	write: function(path, fileBlob){
 
 		var fileSystem = ServiceStore.getService('fileSystem');
@@ -36,7 +65,7 @@ var FileService = {
 
 	},
 
-	read: function(path) {
+	remove: function(path) {
 
 		var fileSystem = ServiceStore.getService('fileSystem');
         if (fileSystem) {
@@ -50,13 +79,9 @@ var FileService = {
 
 			    //define fulfill path - write operation
 	            fileSystem.root.getFile(path, null, function(fileEntry) {
-	            	fileEntry.file(function(file) {
-	            		var reader = new FileReader();
-	            		reader.onloadend = function(evt) {
-				            fulfill(blobUtil.createBlob([evt.target.result], {type: 'text/plain'}));
-				        };
-				        reader.readAsText(file);
-	        		}, fileSystemFail);
+	            	fileEntry.remove(function() {
+	            		fulfill();
+	            	}, fileSystemFail);
 	            }, fileSystemFail) 
 
             });

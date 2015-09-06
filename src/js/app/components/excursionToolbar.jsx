@@ -65,6 +65,23 @@ var ExcursionToolbar = React.createClass({
 		
 	},
 
+	deleteExcursion: function() {
+
+		var fileService = ServiceStore.getService('file');
+
+		fileService.remove('/exc/' + utility.removeSpaces(this.props.excursion.name) + '.exc').then(function() {
+
+			alert('Excursion deleted');
+
+			Actions.triggerServiceEvent({
+                name: 'fileSystem',
+                event: 'update'
+            });
+
+		});
+
+	},
+
 	closeExcursion: function() {
 
 		//close current excursion
@@ -120,7 +137,7 @@ var ExcursionToolbar = React.createClass({
 				key={'edit_2'}
 				primaryText="Delete"
 				leftIcon={<FontIcon className="material-icons">delete</FontIcon>}
-				onClick={this.toggleGpxVisibility} />,
+				onClick={this.deleteExcursion} />,
 			<MenuItem 
 				key={'edit_3'}
 				primaryText="Close"
