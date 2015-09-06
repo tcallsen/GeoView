@@ -29,13 +29,19 @@ var Excursion = function(store, args) {
 
 	} else this.gpx = args.gpx;
 
-	//loop through elevation arrays and instantiate dates for each entry (used by Highcharts)
+
+	// PARSE gpx by performing following actions on each gpx file
 	Object.keys(this.gpx).forEach( gpxEntryKey => {
+
 		var gpxEntry = this.gpx[gpxEntryKey];
-		//make sure elevationa array exists
-		if (!gpxEntry.elevation || !Array.isArray(gpxEntry.elevation)) return;
-		//loop through each element in array and instantiate Date
-		gpxEntry.elevation.forEach( (entry,index) => gpxEntry.elevation[index][0] = index /*new Date(gpxEntry.elevation[index][0])*/ );
+
+		//parse gpx.content into open layers feature
+		gpxEntry.feature = new ol.format.GPX().readFeatures(gpxEntry.content)[0];
+
+		//highcharts - loop through elevation array and set x elewment to index (date commented out ATM)
+		if (gpxEntry.elevation && Array.isArray(gpxEntry.elevation))
+			gpxEntry.elevation.forEach( (entry,index) => gpxEntry.elevation[index][0] = index /*new Date(gpxEntry.elevation[index][0])*/ );
+
 	});
 
 	return this;
@@ -107,25 +113,22 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 			//if onlyVisible then skip over non-visible gpx features
 			if (onlyVisible && !this.gpx[gpxKey].visible) return;
 
-			var gpxPlainText = this.gpx[gpxKey].content;
-
-			//retrieve blob in plaintext and parse into OL features
-			var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
+			var gpxFeature = this.gpx[gpxKey].feature;
 
 			//if excursion does not include elevation array - parse out elevation array
             if (!this.gpx[gpxKey].elevation) {
             	console.log('parsing elevation array for gpx feature');
             	var timeElevationArray = [];
-	            gpxFeature[0].getGeometry().getCoordinates()[0].forEach( (coordPair, index) => {
+	            gpxFeature.getGeometry().getCoordinates()[0].forEach( (coordPair, index) => {
 	            	timeElevationArray.push([ index /*new Date(coordPair[3] * 1000)*/ , coordPair[2] ]);
 	            });
 	            this.gpx[gpxKey].elevation = timeElevationArray;
             }
 
-			//convert featues tp EPSG:3857
-			gpxFeature[0].getGeometry().transform( 'EPSG:4326', 'EPSG:3857');
+			//convert featues tp EPSG:3857 
+			gpxFeature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857');
 
-			gpxFeatures.push(gpxFeature[0]); //need to remove from array it is returned in
+			gpxFeatures.push(gpxFeature); //need to remove from array it is returned in
 
 		});
 
@@ -142,9 +145,8 @@ Excursion.prototype.getGpxProgressIndex = function(gpxKey, position) {
 	//assemble current location coord (needle)
 	var currentLocationCoord = [ position.coords.longitude , position.coords.latitude ];
 	
-	//parse geo feature (haystack)
-	var gpxFeatures = new ol.format.GPX().readFeatures(this.gpx[gpxKey].content);
-	var gpxGeometry = gpxFeatures[0].getGeometry();
+	//assemble gpx feature geometry (haystack)
+	var gpxGeometry = this.gpx[gpxKey].feature.getGeometry();
 
 	//search geo feature for closest point
 	var closestPoint = gpxGeometry.getClosestPoint(currentLocationCoord);
@@ -167,10 +169,24 @@ Excursion.prototype.toggleGpxVisibility = function(guid) {
 
 Excursion.prototype.toJsonBlob = function() {
 
-	//have to create export because of link to parent server
+	//filter excursion and gpx objects to remove non-exportable properties
+	
+	//assemble gpx export
+	var gpxExport = {}
+	Object.keys(this.gpx).forEach( gpxKey => {
+		var gpxEntry = this.gpx[gpxKey];
+		gpxExport[gpxKey] = {
+			content: gpxEntry.content,
+			elevation: gpxEntry.elevation,
+			name: gpxEntry.name,
+			visible: gpxEntry.visible
+		};
+	});
+
+	//assemble excursion export
 	var excursionExport = {
 		name: this.name,
-		gpx: this.gpx
+		gpx: gpxExport
 	}
 
 	return blobUtil.createBlob( [ JSON.stringify(excursionExport) ] , {type: 'application/json'} );
