@@ -286,6 +286,7 @@ var Map = React.createClass({
 
           ],
           target: 'map',
+          controls: ol.control.defaults({ attribution: false }),
           view: new ol.View({
             center: ol.proj.transform( [-111.4997,40.6594], 'EPSG:4326', 'EPSG:3857'),
             zoom: 13,
