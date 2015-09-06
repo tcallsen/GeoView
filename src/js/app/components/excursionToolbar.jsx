@@ -94,6 +94,8 @@ var ExcursionToolbar = React.createClass({
 
     render: function() {
 
+    	console.log('ExcursionToolbar render');
+
     	var style = {
     		excursionTitle: {
     			width: (this.refs.titleSizeAnchor) ? this.refs.titleSizeAnchor.getDOMNode().getBoundingClientRect().left - 40 : 0

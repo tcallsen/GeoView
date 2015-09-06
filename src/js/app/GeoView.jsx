@@ -99,7 +99,6 @@ var GeoView = React.createClass({
         //detect if excursion update - update GeoView display accordingly
         if (args.event && args.current) {
         	this.setState({ excursion: args.current });
-        	console.log(args.current);
         } else if (args.event === 'unmount' || !args.current) {
         	this.setState({ excursion: null });
         }
@@ -110,7 +109,6 @@ var GeoView = React.createClass({
 
         // WINDOW
 		if (serviceEvent.name === 'window' && serviceEvent.payload.size && serviceEvent.payload.size.length == 2) {
-            console.log('geoView resize');
             this.setState({
             	containerSize: serviceEvent.payload.size
             });
