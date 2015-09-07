@@ -63,13 +63,15 @@ Excursion.prototype.addGpxFile = function(args) {
 
 };
 
-Excursion.prototype.save = function() {
+Excursion.prototype.save = function(path) {
 
 	var fileService = ServiceStore.getService('file');
 
 	var jsonBlob = this.toJsonBlob();
 
-	fileService.write('/exc/' + utility.removeSpaces(this.name) + '.exc', jsonBlob).then(function() {
+	var destinationPath = path || '/exc/' + utility.removeSpaces(this.name) + '.exc';
+
+	fileService.write(destinationPath, jsonBlob).then(function() {
 
 		alert('Save complete');
 

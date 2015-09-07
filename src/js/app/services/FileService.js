@@ -168,6 +168,12 @@ var FileService = {
 
 	},
 
+	exists: function (path) {
+
+		return this.getFileEntry(path);
+
+	},
+
 	getDirectoryEntries: function(path) {
 
 		var fileSystem = ServiceStore.getService('fileSystem');
