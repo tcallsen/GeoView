@@ -4,6 +4,7 @@ var React = require("react");
 var Reflux      = require('reflux');
 var ServiceStore = require('../stores/ServiceStore');
 var ExcursionStore = require('../stores/ExcursionStore');
+var Excursion = require('../objects/Excursion');
 var Actions = require('../actions');
 
 var utility = require('../utility');
@@ -44,42 +45,6 @@ var ExcursionToolbar = React.createClass({
 
 	toggleLocation: function() {
 		ServiceStore.getService('location').toggle();
-	},
-
-	saveExcursion: function() {
-
-		var fileService = ServiceStore.getService('file');
-
-		var jsonBlob = this.props.excursion.toJsonBlob();
-
-		fileService.write('/exc/' + utility.removeSpaces(this.props.excursion.name) + '.exc', jsonBlob).then(function() {
-
-			alert('Save complete');
-
-			Actions.triggerServiceEvent({
-                name: 'fileSystem',
-                event: 'update'
-            });
-
-		});
-		
-	},
-
-	deleteExcursion: function() {
-
-		var fileService = ServiceStore.getService('file');
-
-		fileService.remove('/exc/' + utility.removeSpaces(this.props.excursion.name) + '.exc').then(function() {
-
-			alert('Excursion deleted');
-
-			Actions.triggerServiceEvent({
-                name: 'fileSystem',
-                event: 'update'
-            });
-
-		});
-
 	},
 
 	closeExcursion: function() {
@@ -132,12 +97,12 @@ var ExcursionToolbar = React.createClass({
 				key={'edit_1'}
 				primaryText="Save"
 				leftIcon={<FontIcon className="material-icons">save</FontIcon>}
-				onClick={this.saveExcursion} />,
+				onClick={Excursion.prototype.save.bind(this.props.excursion)} />,
 			<MenuItem 
 				key={'edit_2'}
 				primaryText="Delete"
 				leftIcon={<FontIcon className="material-icons">delete</FontIcon>}
-				onClick={this.deleteExcursion} />,
+				onClick={Excursion.prototype.remove.bind(this.props.excursion)} />,
 			<MenuItem 
 				key={'edit_3'}
 				primaryText="Close"

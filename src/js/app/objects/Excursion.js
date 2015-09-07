@@ -2,7 +2,9 @@
 
 var utility		 	= require('../utility'),
 	ol 				= require('openlayers'),
-	blobUtil 		= require('blob-util');
+	blobUtil 		= require('blob-util'),
+	Actions 		= require('../actions'),
+	ServiceStore    = require('../stores/ServiceStore');
 
 var Excursion = function(store, args) {
 
@@ -58,6 +60,44 @@ Excursion.prototype.addGpxFile = function(args) {
 	}
 
 	this.store.emitStoreUpdate('update');
+
+};
+
+Excursion.prototype.save = function() {
+
+	var fileService = ServiceStore.getService('file');
+
+	var jsonBlob = this.toJsonBlob();
+
+	fileService.write('/exc/' + utility.removeSpaces(this.name) + '.exc', jsonBlob).then(function() {
+
+		alert('Save complete');
+
+		Actions.triggerServiceEvent({
+            name: 'fileSystem',
+            event: 'update'
+        });
+
+	});
+
+};
+
+Excursion.prototype.remove = function() {
+
+	var fileService = ServiceStore.getService('file');
+
+	fileService.remove('/exc/' + utility.removeSpaces(this.name) + '.exc').then(function() {
+
+		alert('Excursion deleted');
+
+		Actions.triggerServiceEvent({
+            name: 'fileSystem',
+            event: 'update'
+        });
+
+		this.store.closeCurrent();
+
+	}.bind(this));
 
 };
 
