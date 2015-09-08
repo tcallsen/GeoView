@@ -80,6 +80,7 @@ var FileService = {
 			    //define fulfill path - write operation
 	            fileSystem.root.getFile(path, null, function(fileEntry) {
 	            	fileEntry.remove(function() {
+	            		console.log(path + ' removed');
 	            		fulfill();
 	            	}, fileSystemFail);
 	            }, fileSystemFail) 
@@ -145,12 +146,16 @@ var FileService = {
 
 	},
 
+	/* renamed to .exists() for time being
 	getFileEntry: function(path) {
 
-		var fileSystem = ServiceStore.getService('fileSystem');
-        if (fileSystem) {
+	}, */
 
-        	return new Promise(function (fulfill, reject) {
+	exists: function (path) {
+
+		return new Promise(function (fulfill, reject) {
+
+			return ServiceStore.getServicePromise('fileSystem').then(function(fileSystem) {
 
         		//define reject path - fileSystem error
         		var fileSystemFail = function(event) { 
@@ -164,13 +169,7 @@ var FileService = {
 
             });
 
-    	}
-
-	},
-
-	exists: function (path) {
-
-		return this.getFileEntry(path);
+		});
 
 	},
 

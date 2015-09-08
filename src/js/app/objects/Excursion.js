@@ -73,7 +73,9 @@ Excursion.prototype.save = function(args) {
 
 	fileService.write(destinationPath, jsonBlob).then(function() {
 
-		alert('Save complete');
+		//squelch alert in onblur
+		if (args.path) console.log('Save complete');
+		else alert('Save complete');
 
 		Actions.triggerServiceEvent({
             name: 'fileSystem',

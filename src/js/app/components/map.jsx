@@ -294,7 +294,7 @@ var Map = React.createClass({
           })
         });
 
-      map.on('singleclick', this.toggleMapCacheMode);
+      //map.on('singleclick', this.toggleMapCacheMode);
 
       this.setState({
         map: map,

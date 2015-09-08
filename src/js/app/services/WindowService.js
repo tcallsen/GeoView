@@ -9,23 +9,20 @@ var WindowService = function() {
 
 	this.size = [ window.innerWidth , window.innerHeight ];
 
-    this.hasBeenPaused = false;
-
     window.onresize = this.handleWindowResize;
 
     window.document.addEventListener("resume", this.handleAppResume.bind(this), false);
     window.document.addEventListener("pause", this.handleAppPause.bind(this), false);
     window.document.addEventListener("resign", this.handleAppPause.bind(this), false);
 
-    //window.onblur = this.handleAppPause.bind(this);
-    //window.onfocus = this.handleAppResume.bind(this);
+    //for platform browser debug
+    window.onblur = this.handleAppPause.bind(this);
+    window.onfocus = this.handleAppResume.bind(this);
 
     //detect if previousState saved and load if so
-    //this.loadPreviousState();
+    this.loadPreviousState();
 
 };
-
-WindowService.prototype.previousStatePath = '/previousState.dat';
 
 WindowService.prototype.handleWindowResize = function() {
 
@@ -45,51 +42,57 @@ WindowService.prototype.handleWindowResize = function() {
 
 WindowService.prototype.handleAppResume = function() {
 
-    if (this.hasBeenPaused) console.log('app resumed after being paused, excursion ' + this.hasBeenPaused);
-    else {
-        console.log('app resumed');
-        this.handleWindowResize();
-    }
+    console.log('app resumed');
 
-    this.hasBeenPaused = false;
+    //load previous state (prevents issue where app restarts on load if in background long enough)
+    this.loadPreviousState();
+
+    //handle window resize to account for any adjustments made while app was paused/in background
+    this.handleWindowResize();
 
 };
 
 WindowService.prototype.handleAppPause = function() {
-
-    //this.hasBeenPaused = ExcursionStore.getCurrent().name;
 
     console.log('app paused');
 
     var currentExcursion = ExcursionStore.getCurrent();
     if (currentExcursion) 
         currentExcursion.save({
-            path: this.previousStatePath
+            path: '/previousState.dat'
         });
 
 };
 
-/* WindowService.prototype.loadPreviousState = function() {
+WindowService.prototype.loadPreviousState = function() {
 
-    console.log('loadPreviousState');
+    ServiceStore.getServicePromise('file').then(function(fileService){
 
-    console.log(ServiceStore);
+        fileService.exists('/previousState.dat').then(function() {
+            
+            //file exists
+            console.log('previous state EXISTS - loading from /previousState.dat');
 
-    var fileService = ServiceStore.getService('file');
-    fileService.exists(this.previousStatePath).then(function() {
-        //file exists
-        console.log('file exists');
-    }, function() {
-        //file does not exist
-        console.log('file does not exist');
-    });
+            fileService.read('/previousState.dat').then(function(jsonBlob) {
+                ExcursionStore.loadFromJsonBlob(jsonBlob);
 
+                //remove previous state file
+                fileService.remove('/previousState.dat');
 
-    //var fileService = ServiceStore.getService('file');      
-    //fileService.read(this.previousStatePath).then(function(jsonBlob) {
-    //    ExcursionStore.loadFromJsonBlob(jsonBlob);
-    //});
+            });
 
-}; */
+        }, function() {
+            
+            //file does not exist
+            console.log('previous state NOT EXIST - starting fresh');
+
+            //reset current excursion
+            ExcursionStore.closeCurrent()
+
+        });
+
+    }.bind(this));
+
+};
 
 module.exports = WindowService;
