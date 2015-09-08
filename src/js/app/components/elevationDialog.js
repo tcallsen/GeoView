@@ -200,7 +200,7 @@ var ElevationDialog = React.createClass({
                 <Dialog 
                     ref="dialog" 
                     elevation="true" 
-                    modal="true"
+                    modal={true}
                     title="Elevation Profile" 
                     onShow={this.onDialogShow} 
                     actions={customActions} 

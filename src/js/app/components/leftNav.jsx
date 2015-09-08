@@ -102,26 +102,6 @@ var LeftNav = React.createClass({
 
 	},
 
-	deleteExcursion: function(menuEntry) {
-
-		var fileSystem = ServiceStore.getService('fileSystem');
-        if (fileSystem) {
-
-			fileSystem.root.getFile(menuEntry.fullPath, null, function(fileEntry) {
-
-				fileEntry.remove(function(){
-					Actions.triggerServiceEvent({
-                        name: 'fileSystem',
-                        event: 'update'
-                    });
-				}, this.errorAccessingFileSystem);
-
-			}, this.errorAccessingFileSystem)
-
-		} else alert('File System not loaded.');
-
-	},
-
 	toggleLeftNav: function(event, value) {
 		this.refs.muiLeftNav.toggle();
 	},

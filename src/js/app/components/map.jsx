@@ -115,8 +115,6 @@ var Map = React.createClass({
 
         } else if (serviceEvent.name === 'window') {
 
-            console.log(serviceEvent);
-
             if (serviceEvent.payload.size && serviceEvent.payload.size.length == 2) {
 
                 console.log('map resize');
