@@ -28,7 +28,7 @@ var ServiceStore = Reflux.createStore({
 			//service has been registered - return promise that fulfills with service immediately
 			return new Promise(function (fulfill, reject) {
         		fulfill(this.store.services[serviceName]);
-            });
+            }.bind(this));
 
 		} else {
 
@@ -38,9 +38,6 @@ var ServiceStore = Reflux.createStore({
 				//create entry in store.requestPromises, or append to end of existing entry (in the event that there is a queue of waiting promises)
 				if (this.store.requestPromises[serviceName]) this.store.requestPromises[serviceName].push(fulfill);
 				else this.store.requestPromises[serviceName] = [ fulfill ];
-
-				console.log('getServicePromise');
-				console.log(this.store);
 
             }.bind(this));
 
@@ -75,7 +72,7 @@ var ServiceStore = Reflux.createStore({
 		if (this.store.requestPromises[args.name]) {
 
 			//fulfill all request promies - purge list (since all items have been fulfilled)
-			this.store.requestPromises[args.name].forEach( requestPromiseFulFill => requestPromiseFulFill(args) );
+			this.store.requestPromises[args.name].forEach( requestPromiseFulFill => requestPromiseFulFill(args.service) );
 			delete this.store.requestPromises[args.name]
 
 		}
