@@ -62,7 +62,10 @@ WindowService.prototype.handleAppPause = function() {
     console.log('app paused');
 
     var currentExcursion = ExcursionStore.getCurrent();
-    if (currentExcursion) currentExcursion.save(this.previousStatePath);
+    if (currentExcursion) 
+        currentExcursion.save({
+            path: this.previousStatePath
+        });
 
 };
 
