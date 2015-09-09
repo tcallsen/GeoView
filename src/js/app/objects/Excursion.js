@@ -184,8 +184,6 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 
 Excursion.prototype.getGpxProgressIndex = function(gpxKey, position) {
 
-	console.log('Excursion.prototype.getGpxProgressIndex');
-
 	//assemble current location coord (needle)
 	var currentLocationCoord = [ position.coords.longitude , position.coords.latitude ];
 	
@@ -201,6 +199,8 @@ Excursion.prototype.getGpxProgressIndex = function(gpxKey, position) {
 		if (gpxProgressIndex) return;
 		if (closestPoint[0] === coord[0] && closestPoint[1] === coord[1]) gpxProgressIndex = index;
 	});
+
+	alert('gpxProgressIndex: ' + gpxProgressIndex);
 
 	return gpxProgressIndex;
 
