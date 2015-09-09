@@ -200,7 +200,9 @@ Excursion.prototype.getGpxProgressIndex = function(gpxKey, position) {
 		if (closestPoint[0] === coord[0] && closestPoint[1] === coord[1]) gpxProgressIndex = index;
 	});
 
-	alert('gpxProgressIndex: ' + gpxProgressIndex);
+	alert( 'position: [' + position.coords.longitude + ',' + position.coords.latitude  + '] ' +
+		'closestPoint: [' + closestPoint[0] + ',' + closestPoint[1]  + '] ' +
+		'gpxProgressIndex: ' + gpxProgressIndex );
 
 	return gpxProgressIndex;
 
