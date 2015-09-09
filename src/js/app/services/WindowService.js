@@ -16,8 +16,8 @@ var WindowService = function() {
     window.document.addEventListener("resign", this.handleAppPause.bind(this), false);
 
     //for platform browser debug
-    window.onblur = this.handleAppPause.bind(this);
-    window.onfocus = this.handleAppResume.bind(this);
+    //window.onblur = this.handleAppPause.bind(this);
+    //window.onfocus = this.handleAppResume.bind(this);
 
     //detect if previousState saved and load if so
     this.loadPreviousState();
