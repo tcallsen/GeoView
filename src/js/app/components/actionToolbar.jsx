@@ -10,6 +10,7 @@ var Actions = require('../actions');
 var utility = require('../utility');
 
 var AddGpxDialog   = require("./addGpxDialog");
+var ExcursionLoadDialog = require('./excursionLoadDialog');
 
 var mui = require('material-ui'); 
 var Toolbar = mui.Toolbar;
@@ -31,6 +32,7 @@ var ActionToolbar = React.createClass({
 		
 		return { 
 			gpsTrackingEnabled: false,
+			displayExcursionLoadDialog: false
 		};
 
 	},
@@ -68,6 +70,13 @@ var ActionToolbar = React.createClass({
 	closeExcursion: function() {
         ExcursionStore.closeCurrent();
 	},
+
+	toggleExcursionLoadDialog: function() {
+		if (this.state.displayExcursionLoadDialog) this.refs.excursionLoadDialog.refs.dialog.dismiss();
+		this.setState({
+			displayExcursionLoadDialog: !this.state.displayExcursionLoadDialog
+		});
+	},
 	
 	//excursion selection menu
 
@@ -85,34 +94,28 @@ var ActionToolbar = React.createClass({
     	
     	// CONTEXT MENU - save open delete
 
-    	var editMenuIcon = (<FontIcon className="material-icons">more_vert</FontIcon>);
-    	var editMenuItemsList = [
-    		<MenuItem 
-				key={'edit_0'}
-				primaryText="Edit"
-				leftIcon={<FontIcon className="material-icons">mode_edit</FontIcon>}
-				onClick={this.toggleGpxVisibility} />,
+    	var contextMenuIcon = (<FontIcon className="material-icons">more_vert</FontIcon>);
+    	var contextMenuItemsList = [
 			<MenuItem 
-				key={'edit_1'}
-				primaryText="Save"
-				leftIcon={<FontIcon className="material-icons">save</FontIcon>}
-				onClick={Excursion.prototype.save.bind(this.props.excursion)} />,
+				key={'context_0'}
+				primaryText="Open"
+				leftIcon={<FontIcon className="material-icons">folder open</FontIcon>}
+				onClick={this.toggleExcursionLoadDialog} />,
 			<MenuItem 
-				key={'edit_2'}
+				key={'context_1'}
 				primaryText="Delete"
 				leftIcon={<FontIcon className="material-icons">delete</FontIcon>}
 				onClick={Excursion.prototype.remove.bind(this.props.excursion)} />,
 			<MenuItem 
-				key={'edit_3'}
+				key={'context_2'}
 				primaryText="Close"
 				leftIcon={<FontIcon className="material-icons">close</FontIcon>}
 				onClick={this.closeExcursion} />
-
     	];
 
-    	var editMenu = (
+    	var contextMenu = (
 			<div>
-				{ editMenuItemsList }
+				{ contextMenuItemsList }
 			</div>
 		);
 
@@ -147,8 +150,6 @@ var ActionToolbar = React.createClass({
 		    </div>
 	    );
 
-	    //{ gpxTracksMenu }
-
         return (
             <div>
 	            <Toolbar>
@@ -158,8 +159,8 @@ var ActionToolbar = React.createClass({
 						<h4 className="excursionTitle" onClick={this.props.toggleExcusionPullout} style={ style.excursionTitle }>{ (this.props.excursion) ? this.props.excursion.name : "New Excursion" }</h4>
 
 						<div className="toolbarIconMenu" ref="titleSizeAnchor" style={{float:"left"}}>
-				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
-								{ editMenu }
+				    		<IconMenu iconButtonElement={contextMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
+								{ contextMenu }
 						    </IconMenu>
 					    </div>
 
@@ -172,9 +173,18 @@ var ActionToolbar = React.createClass({
 					</ToolbarGroup>
 
 				</Toolbar>
+				
 				<AddGpxDialog 
 					ref="addGpxDialog" />
+
+				{ (this.state.displayExcursionLoadDialog) ?
+					<ExcursionLoadDialog 
+						ref="excursionLoadDialog"
+						toggleExcursionLoadDialog={this.toggleExcursionLoadDialog} /> :
+					null }
+
 			</div>
+
         );
     }
 });
