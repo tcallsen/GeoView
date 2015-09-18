@@ -24,6 +24,8 @@ var ThemeManager = new mui.Styles.ThemeManager();
 var AppBar = mui.AppBar;
 var Snackbar = mui.Snackbar; 
 
+var ExcursionPullout = require('./components/excursionPullout');
+
 var GeoView = React.createClass({
     
 	mixins: [Reflux.listenToMany({
@@ -33,7 +35,8 @@ var GeoView = React.createClass({
 
 	getInitialState: function() {
 		return {
-			excursion: false
+			excursion: false,
+			displayExcursionPullout: false
 		};
 	},
 
@@ -125,6 +128,13 @@ var GeoView = React.createClass({
 		this.refs.leftNav.toggleLeftNav();
 	},
 
+	toggleExcusionPullout: function() {
+		console.log('toggleExcusionPullout');
+		this.setState({
+			displayExcursionPullout: !this.state.displayExcursionPullout
+		});
+	},
+
 	//forward event handler from actionToolbar down into ElevationSnackbar component
 	toggleElevationSnackbar: function() {
 		this.refs.elevationSnackbar.toggleDisplay();
@@ -144,6 +154,7 @@ var GeoView = React.createClass({
 
         return (
             <div id="GeoView" style={ style.geoView }> 
+              	
               	<LeftNav
               		ref="leftNav" />
               	<AppBar
@@ -158,7 +169,13 @@ var GeoView = React.createClass({
 		  		
 		  		<ActionToolbar 
 	    			excursion={this.state.excursion}
+	    			toggleExcusionPullout={this.toggleExcusionPullout}
 	    			toggleElevationSnackbar={this.toggleElevationSnackbar} />
+
+    			<ExcursionPullout 
+    				excursion={this.state.excursion}
+    				toggleExcusionPullout={this.toggleExcusionPullout}
+    				visible={ this.state.displayExcursionPullout } />
 
             </div>
         );

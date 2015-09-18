@@ -1,5 +1,52 @@
 @brand-color: #4455EE;
 
+
+/* excursion pullout styles */
+
+div#pulloutContainer {
+  transition: height .4s ease;
+  height: 0px;
+  background-color: #E2E2E2;
+  width: 100%;
+  padding: 0 24px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+}
+
+
+/* excursion toolbar styles */
+div.toolbarIconMenu {
+  display: inline-block;
+  position: relative;
+  margin: 16px 0 10px 16px;
+}
+
+div.toolbarIconMenu span {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+div.toolbarIconMenu:hover span {
+  color: rgba(0,0,0,1) !important;
+  cursor: pointer;
+}
+
+h4.excursionTitle {
+  display: inline-block;
+  position: relative;
+  float: left;
+  color: rgba(0,0,0,0.4);
+  font-weight: normal;
+  font-size: 18px;
+  margin: 0;
+  line-height: 56px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
 /* Material Design Icons */
 @font-face {
   font-family: 'Material Icons';
@@ -39,6 +86,11 @@
 }
 /* END Material Design Icons */
 
+
+
+
+
+
 /* Roboto font */
 @font-face {
     font-family: 'robotoregular';
@@ -61,6 +113,15 @@ html, body, div#reactAppContainer {
 }
 
 h1 { color: @brand-color; } 
+
+
+
+
+
+
+
+
+
 
 /* OpenLayers styles */
 div#map {
@@ -317,36 +378,3 @@ div#map {
 .ol-overviewmap-box {
   border: 2px dotted rgba(0,60,136,0.7);
 }
-
-
-
-/* excursion toolbar styles */
-div.toolbarIconMenu {
-  display: inline-block;
-  position: relative;
-  margin: 16px 0 10px 16px;
-}
-
-div.toolbarIconMenu span {
-  color: rgba(0, 0, 0, 0.4) !important;
-}
-
-div.toolbarIconMenu:hover span {
-  color: rgba(0,0,0,1) !important;
-  cursor: pointer;
-}
-
-h4#excursionTitle {
-  display: inline-block;
-  position: relative;
-  float: left;
-  color: rgba(0,0,0,0.4);
-  font-weight: normal;
-  font-size: 18px;
-  margin: 0;
-  line-height: 56px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-

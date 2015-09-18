@@ -155,7 +155,7 @@ var ActionToolbar = React.createClass({
 
 					<ToolbarGroup key={1} float="right">
 
-						<h4 id="excursionTitle" style={ style.excursionTitle }>{ (this.props.excursion) ? this.props.excursion.name : "New Excursion" }</h4>
+						<h4 className="excursionTitle" onClick={this.props.toggleExcusionPullout} style={ style.excursionTitle }>{ (this.props.excursion) ? this.props.excursion.name : "New Excursion" }</h4>
 
 						<div className="toolbarIconMenu" ref="titleSizeAnchor" style={{float:"left"}}>
 				    		<IconMenu iconButtonElement={editMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
