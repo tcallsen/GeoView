@@ -6,7 +6,7 @@ var Reflux = require("reflux");
 
 var Map     = require("./components/Map");
 var LeftNav   = require("./components/leftNav");
-var ExcursionToolbar  = require("./components/excursionToolbar");
+var ActionToolbar  = require("./components/actionToolbar");
 var ElevationSnackbar  = require("./components/elevationSnackbar");
 
 var ServiceStore = require('./stores/ServiceStore');
@@ -125,7 +125,7 @@ var GeoView = React.createClass({
 		this.refs.leftNav.toggleLeftNav();
 	},
 
-	//forward event handler from excursionToolbar down into ElevationSnackbar component
+	//forward event handler from actionToolbar down into ElevationSnackbar component
 	toggleElevationSnackbar: function() {
 		this.refs.elevationSnackbar.toggleDisplay();
 	},
@@ -156,7 +156,7 @@ var GeoView = React.createClass({
 		  		
 		  		<ElevationSnackbar ref="elevationSnackbar" excursion={this.state.excursion} />
 		  		
-		  		<ExcursionToolbar 
+		  		<ActionToolbar 
 	    			excursion={this.state.excursion}
 	    			toggleElevationSnackbar={this.toggleElevationSnackbar} />
 

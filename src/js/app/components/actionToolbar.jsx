@@ -21,7 +21,7 @@ var IconMenu = mui.IconMenu;
 var MenuItem = require('material-ui/lib/menus/menu-item');
 var MenuDivider = require('material-ui/lib/menus/menu-divider');
 
-var ExcursionToolbar = React.createClass({
+var ActionToolbar = React.createClass({
 
 	mixins: [Reflux.listenToMany({
         handleServiceEvent: ServiceStore
@@ -35,6 +35,18 @@ var ExcursionToolbar = React.createClass({
 
 	},
 
+	handleServiceEvent: function(serviceEvent) {
+
+		if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && this.state.gpsTrackingEnabled != serviceEvent.payload.enabled) {
+			this.setState({
+				gpsTrackingEnabled: serviceEvent.payload.enabled
+			});
+		}
+
+    },
+
+	// gps and elevation icons
+
 	toggleGpxVisibility: function(guid) {
 		this.props.excursion.toggleGpxVisibility(guid);
 	},
@@ -47,46 +59,33 @@ var ExcursionToolbar = React.createClass({
 		ServiceStore.getService('location').toggle();
 	},
 
-	closeExcursion: function() {
-
-		//close current excursion
-        ExcursionStore.closeCurrent();
-
-	},
+	//excursion context menu actions
 
 	onItemTouchTap: function(event, item) {
 		console.log('onItemTouchTap', event, item);
 	},
 
-	onChange: function() {
-
-		alert('onChange');
-
+	closeExcursion: function() {
+        ExcursionStore.closeCurrent();
 	},
-
-	handleServiceEvent: function(serviceEvent) {
-
-		if (serviceEvent.name === 'location' && serviceEvent.event === 'update' && this.state.gpsTrackingEnabled != serviceEvent.payload.enabled) {
-			this.setState({
-				gpsTrackingEnabled: serviceEvent.payload.enabled
-			});
-		}
-
-    },
+	
+	//excursion selection menu
 
     render: function() {
 
-    	console.log('ExcursionToolbar render');
+    	console.log('ActionToolbar render');
 
     	var style = {
     		excursionTitle: {
-    			width: (this.refs.titleSizeAnchor) ? this.refs.titleSizeAnchor.getDOMNode().getBoundingClientRect().left - 40 : 0
+    			width: (this.refs.titleSizeAnchor) ? this.refs.titleSizeAnchor.getDOMNode().getBoundingClientRect().left - 40 : 0,
+    			//float: 'left'
     		}
     	};
 
-    	//build edit menu
+    	
+    	// CONTEXT MENU - save open delete
+
     	var editMenuIcon = (<FontIcon className="material-icons">more_vert</FontIcon>);
-    	//var leftMenuIcon = ;
     	var editMenuItemsList = [
     		<MenuItem 
 				key={'edit_0'}
@@ -117,7 +116,7 @@ var ExcursionToolbar = React.createClass({
 			</div>
 		);
 
-    	//build gpx tracks menu - add excursion gpx files if excursion set
+		// GPX TRAKS MENU - add excursion gpx files if excursion set
 		var gpxMenuIcon = (<FontIcon className="material-icons">swap_calls</FontIcon>);
 		var gpxMenuItemsList = [];
 		if (this.props.excursion && this.props.excursion.getGpxList().length) {
@@ -180,4 +179,4 @@ var ExcursionToolbar = React.createClass({
     }
 });
 
-module.exports = ExcursionToolbar;
+module.exports = ActionToolbar;
