@@ -51,41 +51,9 @@ var LeftNav = React.createClass({
 	handleServiceEvent: function(serviceEvent) {
 
 		//detect if filesystem update - if so reload excursions and gpx files
-		if (serviceEvent.name === 'fileSystem') {
-			this.loadAvailableExcursions(serviceEvent.service);
-		}
-
-	},
-
-	loadAvailableExcursions: function(fileSystem) {
-
-		console.log('loadAvailableExcursions');
-
-		var fileService = ServiceStore.getService('file');
-		fileService.getDirectoryEntries("/exc/").then(function(directoryEntries) {
-
-			var excursionEntries = directoryEntries.filter(function(entry) {
-				return utility.endsWith(entry.fullPath, '.exc');
-			});
-
-			var excursionsMenuItems = [];
-
-			excursionEntries.forEach( (entry,index) => {
-				if (entry.isDirectory) return;
-				
-				excursionsMenuItems.push({
-					key: 'excursion_' + index,
-					text: entry.name,
-					action: this.loadExcursion.bind(this, entry)
-				});
-
-			});
-
-			this.setState({
-				excursionsMenuItems: excursionsMenuItems
-			});
-
-		}.bind(this));
+		//if (serviceEvent.name === 'fileSystem') {
+		//	this.loadAvailableExcursions(serviceEvent.service);
+		//}
 
 	},
 
@@ -93,14 +61,7 @@ var LeftNav = React.createClass({
 		console.log(evt);
 	},
 
-	loadExcursion: function(menuEntry) {
 
-		var fileService = ServiceStore.getService('file');		
-		fileService.read(menuEntry.fullPath).then(function(jsonBlob) {
-			ExcursionStore.loadFromJsonBlob(jsonBlob);
-		});
-
-	},
 
 	toggleLeftNav: function(event, value) {
 		this.refs.muiLeftNav.toggle();

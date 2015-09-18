@@ -120,6 +120,26 @@ var FileService = {
 
 	},
 
+	getAvailableExcursions: function() {
+
+		console.log('getAvailableExcursions');
+
+		return new Promise(function (fulfill, reject) {
+
+			this.getDirectoryEntries("/exc/").then(function(directoryEntries) {
+
+				fulfill (
+					directoryEntries.filter(function(entry) {
+						return utility.endsWith(entry.fullPath, '.exc');
+					})
+				);
+
+			});
+
+		}.bind(this));
+
+	},
+
 	download: function(url, options){
 
 		var fileTransfer = new FileTransfer();
