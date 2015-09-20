@@ -41,7 +41,7 @@ var ExcursionStore = Reflux.createStore({
 	emitStoreUpdate: function(event) {
 
 		this.trigger({
-			event: event,
+			event: event || 'update',
 			current: this.store.excursion,
 			store: this.store
 		});

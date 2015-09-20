@@ -6,7 +6,11 @@ var React 			= require("react"),
 	ExcursionStore 	= require('../stores/ExcursionStore'),
 	Excursion 		= require('../objects/Excursion'),
 	Actions 		= require('../actions'),
-	utility 		= require('../utility');
+	utility 		= require('../utility'),
+	{ 
+		TextField,
+		FontIcon
+	} 				= require('material-ui');
 
 var ExcursionPullout = React.createClass({
 
@@ -32,6 +36,41 @@ var ExcursionPullout = React.createClass({
 
     },
 
+    handleExcursionFocus: function(event) {
+    	if (!this.props.excursion) this.refs.excursionNameTextField.clearValue();
+    },
+
+    handleExcursionBlur: function(event) {
+
+    	console.log('updateExcursionName');
+
+    	//make sure excursion name has been changed or entered - else revert to New Excursion
+    	var excursionName = this.refs.excursionNameTextField.getValue().trim();
+    	if (excursionName === '')
+    		this.refs.excursionNameTextField.setValue( (this.props.excursion) ? this.props.excursion.name : "New Excursion" );
+    	else {
+
+    		//if no excursion exists - create a new one
+    		if (!this.props.excursion)
+    			ExcursionStore.create({
+	                name: excursionName,
+	            });
+    		//if excursion exists - update name
+    		else {
+
+    			var excursion = ExcursionStore.getCurrent();
+    			excursion.name = excursionName;
+
+    			ExcursionStore.emitStoreUpdate()
+
+    		}
+
+    	}
+
+    	console.log('current excursion:', ExcursionStore.getCurrent());
+
+    },
+
 	//excursion selection menu
 
     render: function() {
@@ -46,7 +85,19 @@ var ExcursionPullout = React.createClass({
 
         return (
             <div id="pulloutContainer" style={ style.pulloutContainer }>
-	            <h4 className="excursionTitle" onClick={this.props.toggleExcusionPullout} style={ style.excursionTitle }>{ (this.props.excursion) ? this.props.excursion.name : "New Excursion" }</h4>
+	            
+            	<TextField
+					ref="excursionNameTextField"
+					className="excursionTitle"
+					onFocus={this.handleExcursionFocus}
+					onBlur={this.handleExcursionBlur}
+					defaultValue={ (this.props.excursion) ? this.props.excursion.name : "New Excursion" } />
+
+				<ul id="topRightActionMenu">
+					{ (this.props.excursion) ? <li><FontIcon onClick={Excursion.prototype.save.bind(this.props.excursion)} className="material-icons">save</FontIcon></li> : null }
+					<li><FontIcon onClick={this.props.toggleExcusionPullout} className="material-icons">keyboard_arrow_down</FontIcon></li>
+				</ul>
+
 			</div>
         );
     }

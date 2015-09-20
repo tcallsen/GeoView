@@ -15,6 +15,25 @@ div#pulloutContainer {
   z-index: 4;
 }
 
+div#pulloutContainer ul#topRightActionMenu {
+  margin: 0;
+  padding: 0px;
+  position: absolute;
+  top: 0;
+  right: 56px;
+}
+
+div#pulloutContainer ul#topRightActionMenu li {
+  list-style: none;
+  display: inline-block;
+  padding: 0px;
+  margin: 0;
+}
+
+/* enlarge clickable area of FontIcon inside li element */
+div#pulloutContainer ul#topRightActionMenu li > span {
+  padding: 14px 10px;
+}
 
 /* excursion toolbar styles */
 div.toolbarIconMenu {
@@ -32,7 +51,7 @@ div.toolbarIconMenu:hover span {
   cursor: pointer;
 }
 
-h4.excursionTitle {
+.excursionTitle {
   display: inline-block;
   position: relative;
   float: left;
