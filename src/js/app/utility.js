@@ -28,8 +28,6 @@ module.exports = utility;
 
 /* utility.promiseWhile() example
 
-
-
   var Promise = require('bluebird');
 
   utility.promiseWhile = function(condition, action) {
@@ -46,8 +44,6 @@ module.exports = utility;
 
       return resolver.promise;
   }; 
-
-
 
   1)
 

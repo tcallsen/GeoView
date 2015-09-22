@@ -23,7 +23,7 @@ var Excursion = function(store, args) {
 		//create new gpx if supplied
 		if (args.gpx)
 			this.gpx[utility.getGuid()] = {
-				name: args.gpx.name || 'GPX File ' + (parseInt(this.getGpxList().length) + 1),
+				name: args.gpx.name || 'GPX File ' + (parseInt(Object.keys(this.gpx).length) + 1),
 				content: args.gpx.content,
 				elevation: null,
 				visible: true
@@ -54,7 +54,7 @@ Excursion.prototype.addGpxFile = function(args) {
 
 	//create new gpx
 	this.gpx[utility.getGuid()] = {
-		name: args.name || 'GPX File ' + (parseInt(this.getGpxList().length) + 1),
+		name: args.name || 'GPX File ' + (parseInt(Object.keys(this.gpx).length) + 1),
 		content: args.content,
 		feature: new ol.format.GPX().readFeatures(args.content)[0], //parse gpx into open layers feature
 		visible: true
@@ -106,84 +106,40 @@ Excursion.prototype.remove = function() {
 
 };
 
-Excursion.prototype.getGpxList = function() {
-
-	var returnArray = [];
-
-	for (var key in this.gpx) {
-		if (this.gpx.hasOwnProperty(key)) {
-			
-			var gpx = this.gpx[key];
-			
-			returnArray.push({
-				name: gpx.name,
-				guid: key,
-				visible: gpx.visible
-			});
-
-		}
-	}
-
-	return returnArray;
-
-};
-
 Excursion.prototype.getGpxEntry = function(guid) {
 	return this.gpx[guid];
 };
 
 Excursion.prototype.getGpxFeatures = function(onlyVisible) {
 
-	/* 
+	//gpxFeautres list - populated through loop with feature for each GPX file in excursion
+	var gpxFeatures = [];
 
-	DEPRECATED
+	Object.keys(this.gpx).forEach( gpxKey => {
 
-	if (guid) {
+		//if onlyVisible then skip over non-visible gpx features
+		if (onlyVisible && !this.gpx[gpxKey].visible) return;
 
-		//RETURN FEATURE OF SPECIFIC GPX
+		var gpxFeature = this.gpx[gpxKey].feature;
 
-		var gpxPlainText = this.gpx[guid].content;
+		//if excursion does not include elevation array - parse out elevation array
+        if (!this.gpx[gpxKey].elevation) {
+        	console.log('parsing elevation array for gpx feature');
+        	var timeElevationArray = [];
+            gpxFeature.getGeometry().getCoordinates()[0].forEach( (coordPair, index) => {
+            	timeElevationArray.push([ index /*new Date(coordPair[3] * 1000)*/ , coordPair[2] ]);
+            });
+            this.gpx[gpxKey].elevation = timeElevationArray;
+        }
 
-		//retrieve blob in plaintext and parse into OL features
-		var gpxFeature = new ol.format.GPX().readFeatures(gpxPlainText);
+		//convert featues tp EPSG:3857 
+		gpxFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
-		//convert featues tp EPSG:3857
-		gpxFeature.forEach( feature => feature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857') );
+		gpxFeatures.push(gpxFeature); //need to remove from array it is returned in
 
-		return gpxFeature;
+	});
 
-	} else { */
-
-		//gpxFeautres list - populated through loop with feature for each GPX file in excursion
-		var gpxFeatures = [];
-
-		Object.keys(this.gpx).forEach( gpxKey => {
-
-			//if onlyVisible then skip over non-visible gpx features
-			if (onlyVisible && !this.gpx[gpxKey].visible) return;
-
-			var gpxFeature = this.gpx[gpxKey].feature;
-
-			//if excursion does not include elevation array - parse out elevation array
-            if (!this.gpx[gpxKey].elevation) {
-            	console.log('parsing elevation array for gpx feature');
-            	var timeElevationArray = [];
-	            gpxFeature.getGeometry().getCoordinates()[0].forEach( (coordPair, index) => {
-	            	timeElevationArray.push([ index /*new Date(coordPair[3] * 1000)*/ , coordPair[2] ]);
-	            });
-	            this.gpx[gpxKey].elevation = timeElevationArray;
-            }
-
-			//convert featues tp EPSG:3857 
-			gpxFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-
-			gpxFeatures.push(gpxFeature); //need to remove from array it is returned in
-
-		});
-
-		return gpxFeatures;
-
-	//}
+	return gpxFeatures;
 
 }
 
