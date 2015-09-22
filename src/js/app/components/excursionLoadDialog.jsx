@@ -7,7 +7,9 @@ var Reflux          = require('reflux'),
     utility         = require('../utility'),
     { mui,
       Dialog,
-      FlatButton }  = require('material-ui');
+      FlatButton,
+      List,
+      ListItem }    = require('material-ui');
 
 var ExcrusionLoadDialog = React.createClass({
 
@@ -59,22 +61,27 @@ var ExcrusionLoadDialog = React.createClass({
         //styles
         var style = {
             containerDiv: {
-                textAlign: 'center',
-                maxWidth: 400
+                textAlign: 'center'
             }
         }
- 
-        var excursionListItems = []
-        this.state.excursionList.forEach( excursionFileEntry => {
-            excursionListItems.push( <li onClick={this.loadExcursion.bind(this,excursionFileEntry)}>{excursionFileEntry.name}</li> );
+
+        //EXCURSION LIST ITEMS MENU
+        var excursionListItems = [];
+        this.state.excursionList.forEach( (excursionFileEntry,index) => {
+            excursionListItems.push(
+                <ListItem 
+                    key={'exc_'+index}
+                    primaryText={excursionFileEntry.name}
+                    onClick={this.loadExcursion.bind(this,excursionFileEntry)} />
+            );
         });
 
         return (
             <Dialog ref="dialog" openImmediately={true} title="Select Excursion" actions={customActions} autoDetectWindowHeight={true} autoScrollBodyContent={true}>
                 <div style={style.containerDiv}>
-                    <ul>
+                    <List>
                         { excursionListItems }
-                    </ul>
+                    </List>    
                 </div>
             </Dialog>
         );
