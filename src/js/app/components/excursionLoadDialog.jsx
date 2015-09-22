@@ -70,9 +70,8 @@ var ExcrusionLoadDialog = React.createClass({
         });
 
         return (
-            <Dialog ref="dialog" openImmediately={true} title="Open Excursion" actions={customActions} autoDetectWindowHeight={true} autoScrollBodyContent={true}>
+            <Dialog ref="dialog" openImmediately={true} title="Select Excursion" actions={customActions} autoDetectWindowHeight={true} autoScrollBodyContent={true}>
                 <div style={style.containerDiv}>
-                    <p>Select and Excurion below to open:</p>
                     <ul>
                         { excursionListItems }
                     </ul>

@@ -9,7 +9,6 @@ var Actions = require('../actions');
 
 var utility = require('../utility');
 
-var AddGpxDialog   = require("./addGpxDialog");
 var ExcursionLoadDialog = require('./excursionLoadDialog');
 
 var mui = require('material-ui'); 
@@ -48,14 +47,6 @@ var ActionToolbar = React.createClass({
     },
 
 	// gps and elevation icons
-
-	toggleGpxVisibility: function(guid) {
-		this.props.excursion.toggleGpxVisibility(guid);
-	},
-
-	toggleAddGpxFileDialog: function() {
-		this.refs.addGpxDialog.refs.dialog.show();
-	},
 
 	toggleLocation: function() {
 		ServiceStore.getService('location').toggle();
@@ -119,37 +110,6 @@ var ActionToolbar = React.createClass({
 			</div>
 		);
 
-		// GPX TRAKS MENU - add excursion gpx files if excursion set
-		var gpxMenuIcon = (<FontIcon className="material-icons">swap_calls</FontIcon>);
-		var gpxMenuItemsList = [];
-		if (this.props.excursion && this.props.excursion.getGpxList().length) {
-			this.props.excursion.getGpxList().map( (gpx, index) => {
-				gpxMenuItemsList.push(
-					<MenuItem 
-						key={'gpx_'+index}
-						primaryText={gpx.name} 
-						checked={gpx.visible}
-						onClick={this.toggleGpxVisibility.bind(this, gpx.guid)} />
-				);
-			});
-		}
-
-		var gpxMenu = (
-			<div>
-				{ gpxMenuItemsList }
-				{ gpxMenuItemsList.length ? <MenuDivider /> : null }
-			</div>
-		);
-
-    	var gpxTracksMenu = (
-    		<div className="toolbarIconMenu">
-	    		<IconMenu iconButtonElement={gpxMenuIcon} openDirection='top-left' onItemTouchTap={this.onItemTouchTap}>
-					{ gpxMenu }
-					<MenuItem primaryText="Add GPX File.." onClick={this.toggleAddGpxFileDialog} />
-			    </IconMenu>
-		    </div>
-	    );
-
         return (
             <div>
 	            <Toolbar>
@@ -173,9 +133,6 @@ var ActionToolbar = React.createClass({
 					</ToolbarGroup>
 
 				</Toolbar>
-				
-				<AddGpxDialog 
-					ref="addGpxDialog" />
 
 				{ (this.state.displayExcursionLoadDialog) ?
 					<ExcursionLoadDialog 

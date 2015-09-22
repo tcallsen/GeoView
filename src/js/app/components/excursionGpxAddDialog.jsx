@@ -23,16 +23,15 @@ var AddGpxDialog = React.createClass({
 
   	},
 
-    dismissDialog: function() {
-        this.refs.dialog.dismiss();
-    },
-
     addGpxFile: function(event) {
 
         //get excursionName & gpxUrl - return if they do not exist
         var gpxUrl = this.refs.gpxFileUrl.getValue();
         var gpxName = this.refs.gpxFileName.getValue();
         //if (!excursionName || !gpxUrl) return;
+
+        //make sure excursion exists
+        if (!this.props.excursion) this.props.createNewExcursion();
 
         if (gpxUrl) {
 
@@ -80,7 +79,7 @@ var AddGpxDialog = React.createClass({
 
             });
 
-        this.dismissDialog();
+        this.props.toggleExcursionGpxAddDialog();
 
         }
 
@@ -96,7 +95,7 @@ var AddGpxDialog = React.createClass({
             key="cancel"
             label="Cancel"
             secondary={true}
-            onTouchTap={this.dismissDialog} />,
+            onTouchTap={this.props.toggleExcursionGpxAddDialog} />,
           <FlatButton
             key="create"
             label="Create"
@@ -113,7 +112,7 @@ var AddGpxDialog = React.createClass({
         }
  
         return (
-            <Dialog ref="dialog" title="Add GPX File" actions={customActions} autoDetectWindowHeight={true} autoScrollBodyContent={true}>
+            <Dialog ref="dialog" openImmediately={true} title="Add GPX File" actions={customActions} autoDetectWindowHeight={true} autoScrollBodyContent={true}>
                 <div style={style.containerDiv}>
 
                     <TextField

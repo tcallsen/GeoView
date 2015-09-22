@@ -13,7 +13,7 @@ var Dialog = require('../vendor/material-ui/dialog');
 var FlatButton = mui.FlatButton;
 var TextField = mui.TextField; 
 
-var NewDialog = React.createClass({
+var ExcursionGpxAddDialog = React.createClass({
 
   	getInitialState: function() {
 
@@ -173,4 +173,4 @@ var NewDialog = React.createClass({
     }
 });
 
-module.exports = NewDialog;
+module.exports = ExcursionGpxAddDialog;

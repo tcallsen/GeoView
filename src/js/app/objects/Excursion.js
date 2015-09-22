@@ -56,6 +56,7 @@ Excursion.prototype.addGpxFile = function(args) {
 	this.gpx[utility.getGuid()] = {
 		name: args.name || 'GPX File ' + (parseInt(this.getGpxList().length) + 1),
 		content: args.content,
+		feature: new ol.format.GPX().readFeatures(args.content)[0], //parse gpx into open layers feature
 		visible: true
 	}
 
@@ -131,7 +132,11 @@ Excursion.prototype.getGpxEntry = function(guid) {
 	return this.gpx[guid];
 };
 
-Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
+Excursion.prototype.getGpxFeatures = function(onlyVisible) {
+
+	/* 
+
+	DEPRECATED
 
 	if (guid) {
 
@@ -147,7 +152,7 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 
 		return gpxFeature;
 
-	} else {
+	} else { */
 
 		//gpxFeautres list - populated through loop with feature for each GPX file in excursion
 		var gpxFeatures = [];
@@ -170,7 +175,7 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
             }
 
 			//convert featues tp EPSG:3857 
-			gpxFeature.getGeometry().transform( 'EPSG:4326', 'EPSG:3857');
+			gpxFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
 			gpxFeatures.push(gpxFeature); //need to remove from array it is returned in
 
@@ -178,7 +183,7 @@ Excursion.prototype.getGpxFeatures = function(guid, onlyVisible) {
 
 		return gpxFeatures;
 
-	}
+	//}
 
 }
 

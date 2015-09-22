@@ -4,12 +4,18 @@ var React 			= require("react"),
 	Reflux      	= require('reflux'),
 	ServiceStore 	= require('../stores/ServiceStore'),
 	ExcursionStore 	= require('../stores/ExcursionStore'),
+	ExcursionGpxAddDialog = require('./excursionGpxAddDialog'),
 	Excursion 		= require('../objects/Excursion'),
 	Actions 		= require('../actions'),
 	utility 		= require('../utility'),
 	{ 
 		TextField,
-		FontIcon
+		FontIcon,
+		List,
+		ListItem,
+		ListDivider,
+		FontIcon,
+		Checkbox
 	} 				= require('material-ui');
 
 var ExcursionPullout = React.createClass({
@@ -22,6 +28,7 @@ var ExcursionPullout = React.createClass({
 		
 		return { 
 			gpsTrackingEnabled: false,
+			displayExcursionGpxAddDialog: false
 		};
 
 	},
@@ -33,6 +40,16 @@ var ExcursionPullout = React.createClass({
 				gpsTrackingEnabled: serviceEvent.payload.enabled
 			});
 		} */
+
+    },
+
+    // EXCURSION TITLE actions
+
+    createNewExcursion: function(excursionName) {
+
+    	ExcursionStore.create({
+            name: excursionName || 'New Excursion',
+        });
 
     },
 
@@ -51,10 +68,7 @@ var ExcursionPullout = React.createClass({
     	else {
 
     		//if no excursion exists - create a new one
-    		if (!this.props.excursion)
-    			ExcursionStore.create({
-	                name: excursionName,
-	            });
+    		if (!this.props.excursion) this.createNewExcursion(excursionName);
     		//if excursion exists - update name
     		else {
 
@@ -71,17 +85,54 @@ var ExcursionPullout = React.createClass({
 
     },
 
-	//excursion selection menu
+    // GPX MENU Actions
+
+	toggleGpxVisibility: function(guid) {
+		
+		console.log('toggleGpxVisibility', guid);
+
+		this.props.excursion.toggleGpxVisibility(guid);
+	},
+
+	toggleExcursionGpxAddDialog: function() {
+		if (this.state.displayExcursionGpxAddDialog) this.refs.excursionGpxAddDialog.refs.dialog.dismiss();
+		this.setState({
+			displayExcursionGpxAddDialog: !this.state.displayExcursionGpxAddDialog
+		});
+	},
 
     render: function() {
 
-    	console.log('ExcursionPullout render');
+    	console.log('ExcursionPullout render', this.state.displayExcursionGpxAddDialog);
 
     	var style = {
     		pulloutContainer: {
     			height: (this.props.visible) ? 'calc(100% - 64px)' : 0
     		}
     	};
+
+    	//GPX MENU
+    	var gpxMenuItems =[];
+    	if (this.props.excursion) {
+
+	    	// GPX TRAKS MENU - add excursion gpx files if excursion set
+			Object.keys(this.props.excursion.gpx).forEach( (key, index) => {
+				var gpx = this.props.excursion.gpx[key];
+				gpxMenuItems.push(
+					<ListItem 
+						key={'gpx_'+index}
+						primaryText={gpx.name} 
+						leftCheckbox={ <Checkbox onClick={this.toggleGpxVisibility.bind(this,key)} defaultChecked={gpx.visible} /> } />
+				);
+			});
+
+	    }
+
+		//add divider if needed
+		if (gpxMenuItems.length) gpxMenuItems.push( <ListDivider /> );
+
+		//add the 'add gpx file' entry
+		gpxMenuItems.push( <ListItem primaryText="Add GPX File.." onClick={this.toggleExcursionGpxAddDialog} /> );
 
         return (
             <div id="pulloutContainer" style={ style.pulloutContainer }>
@@ -97,6 +148,18 @@ var ExcursionPullout = React.createClass({
 					{ (this.props.excursion) ? <li><FontIcon onClick={Excursion.prototype.save.bind(this.props.excursion)} className="material-icons">save</FontIcon></li> : null }
 					<li><FontIcon onClick={this.props.toggleExcusionPullout} className="material-icons">keyboard_arrow_down</FontIcon></li>
 				</ul>
+
+				<List style={{clear:'both'}}>
+					{ gpxMenuItems }
+				</List>
+
+				{ (this.state.displayExcursionGpxAddDialog) ?
+					<ExcursionGpxAddDialog 
+						ref="excursionGpxAddDialog"
+						createNewExcursion={this.createNewExcursion}
+						excursion={this.props.excursion}
+						toggleExcursionGpxAddDialog={this.toggleExcursionGpxAddDialog} /> :
+					null }
 
 			</div>
         );

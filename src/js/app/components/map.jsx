@@ -47,7 +47,7 @@ var Map = React.createClass({
 
             //retrieve GPX features and draw on map
             var excursion = ExcursionStore.getCurrent();
-            var gpxFeatures = excursion.getGpxFeatures(null, true);
+            var gpxFeatures = excursion.getGpxFeatures(true);
 
             this.state.excursionLayer.setSource(new ol.source.Vector({
                 features: gpxFeatures
