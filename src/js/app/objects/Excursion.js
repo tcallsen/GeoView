@@ -64,6 +64,14 @@ Excursion.prototype.addGpxFile = function(args) {
 
 };
 
+Excursion.prototype.removeGpxFile = function(guid) {
+
+	delete this.gpx[guid];
+
+	this.store.emitStoreUpdate('update');
+
+};
+
 Excursion.prototype.save = function(args) {
 
 	var fileService = ServiceStore.getService('file');

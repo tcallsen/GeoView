@@ -101,6 +101,18 @@ var ExcursionPullout = React.createClass({
 		});
 	},
 
+	deleteGpxFile: function(guid, event) {
+
+		console.log('deleteGpxFile', guid);
+
+		this.props.excursion.removeGpxFile(guid);
+
+		//stop event propogation
+		if (event.bubbles) event.bubbles = false;
+        if (event.nativeEvent && event.nativeEvent.preventDefault) event.nativeEvent.preventDefault();
+
+	},
+
     render: function() {
 
     	console.log('ExcursionPullout render', this.state.displayExcursionGpxAddDialog);
@@ -108,6 +120,10 @@ var ExcursionPullout = React.createClass({
     	var style = {
     		pulloutContainer: {
     			height: (this.props.visible) ? 'calc(100% - 64px)' : 0
+    		},
+    		rightIconButton: {
+    			top: 8,
+    			right: 14
     		}
     	};
 
@@ -122,6 +138,7 @@ var ExcursionPullout = React.createClass({
 					<ListItem 
 						key={'gpx_'+index}
 						primaryText={gpx.name} 
+						rightIconButton={ <FontIcon onClick={this.deleteGpxFile.bind(this,key)} className="material-icons" style={style.rightIconButton}>delete</FontIcon> }
 						leftCheckbox={ <Checkbox onClick={this.toggleGpxVisibility.bind(this,key)} defaultChecked={gpx.visible} /> } />
 				);
 			});
